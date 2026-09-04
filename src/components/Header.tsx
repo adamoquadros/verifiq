@@ -237,7 +237,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className="font-extrabold text-xs text-slate-900">{authUser.name}</div>
                     <div className="text-[10px] text-slate-500 truncate">{authUser.email || `Matrícula: ${authUser.badgeNumber}`}</div>
                     <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800">
-                      <span>Perfil: {authUser.role} (Acesso Total)</span>
+                      <span>Perfil: {authUser.role}</span>
                     </div>
                   </div>
 
@@ -282,6 +282,16 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               )}
             </div>
+
+            {/* Quick Logout Button */}
+            <button
+              onClick={onLogout}
+              className="p-2 sm:px-2.5 sm:py-1.5 text-rose-700 hover:bg-rose-50 border border-rose-200 rounded-xl text-xs font-bold flex items-center gap-1 transition-colors"
+              title="Encerrar Sessão / Trocar de Usuário"
+            >
+              <LogOut className="w-3.5 h-3.5 text-rose-600" />
+              <span className="hidden md:inline">Sair</span>
+            </button>
 
             {/* Backup / Reset Menu */}
             <div className="relative">

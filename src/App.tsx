@@ -406,6 +406,8 @@ export function App() {
       <LoginScreen
         users={users}
         onLoginSuccess={handleLoginSuccess}
+        onRegisterUser={handleSaveUser}
+        isNeonConnected={isNeonConnected}
       />
     );
   }

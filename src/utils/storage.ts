@@ -243,10 +243,10 @@ export const storage = {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.AUTH_USER);
       if (data) return JSON.parse(data);
-      // Default to first admin
-      return INITIAL_USERS[0];
+      // Exigir login explícito na primeira página
+      return null;
     } catch {
-      return INITIAL_USERS[0];
+      return null;
     }
   },
 

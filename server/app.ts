@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // 1. Health & Status
-app.get('/api/health', async (_req, res) => {
+app.get(['/health', '/api/health'], async (_req, res) => {
   const conn = await testConnection();
   if (conn.ok) {
     res.json({ status: 'ok', neon: 'connected', db: conn.dbName, timestamp: conn.timestamp });
@@ -25,7 +25,8 @@ app.get('/api/health', async (_req, res) => {
 });
 
 // 2. Bootstrap (Carga completa unificada do sistema)
-app.get('/api/bootstrap', async (_req, res) => {
+app.get(['/bootstrap', '/api/bootstrap'], async (_req, res) => {
+
   if (!isDbConfigured) {
     return res.json({
       ok: false,
@@ -126,7 +127,7 @@ app.get('/api/bootstrap', async (_req, res) => {
 });
 
 // 3. Empresas (Companies)
-app.post('/api/companies', async (req, res) => {
+app.post(['/companies', '/api/companies'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const comp = req.body;
@@ -148,7 +149,7 @@ app.post('/api/companies', async (req, res) => {
   }
 });
 
-app.delete('/api/companies/:id', async (req, res) => {
+app.delete(['/companies/:id', '/api/companies/:id'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const { id } = req.params;
@@ -160,7 +161,7 @@ app.delete('/api/companies/:id', async (req, res) => {
 });
 
 // 4. Modelos de Controle (Document Controls)
-app.post('/api/controls', async (req, res) => {
+app.post(['/controls', '/api/controls'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const ctrl = req.body;
@@ -196,7 +197,7 @@ app.post('/api/controls', async (req, res) => {
   }
 });
 
-app.delete('/api/controls/:id', async (req, res) => {
+app.delete(['/controls/:id', '/api/controls/:id'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const { id } = req.params;
@@ -209,7 +210,7 @@ app.delete('/api/controls/:id', async (req, res) => {
 });
 
 // 5. Registros de Check (Check Records)
-app.post('/api/records', async (req, res) => {
+app.post(['/records', '/api/records'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const r = req.body;
@@ -241,7 +242,7 @@ app.post('/api/records', async (req, res) => {
   }
 });
 
-app.delete('/api/records/:id', async (req, res) => {
+app.delete(['/records/:id', '/api/records/:id'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const { id } = req.params;
@@ -253,7 +254,7 @@ app.delete('/api/records/:id', async (req, res) => {
 });
 
 // Zerar Lançamentos
-app.post('/api/records/clear', async (req, res) => {
+app.post(['/records/clear', '/api/records/clear'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const { controlId, month, year } = req.body;
@@ -275,7 +276,7 @@ app.post('/api/records/clear', async (req, res) => {
 });
 
 // 6. Usuários (Users)
-app.post('/api/users', async (req, res) => {
+app.post(['/users', '/api/users'], async (req, res) => {
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const u = req.body;
@@ -297,7 +298,8 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
-app.delete('/api/users/:id', async (req, res) => {
+app.delete(['/users/:id', '/api/users/:id'], async (req, res) => {
+
   if (!isDbConfigured) return res.json({ ok: false, localOnly: true });
   try {
     const { id } = req.params;
