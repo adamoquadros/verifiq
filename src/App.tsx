@@ -176,9 +176,9 @@ export function App() {
   };
 
   // Auth Handlers
-  const handleLoginSuccess = (user: UserAccount) => {
+  const handleLoginSuccess = (user: UserAccount, rememberMe: boolean = true) => {
     setAuthUser(user);
-    storage.setAuthUser(user);
+    storage.setAuthUser(user, rememberMe);
 
     if (user.companyId && companies.some(c => c.id === user.companyId)) {
       setActiveCompanyId(user.companyId);

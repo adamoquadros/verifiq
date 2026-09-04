@@ -241,20 +241,30 @@ export const storage = {
 
   getAuthUser(): UserAccount | null {
     try {
-      const data = localStorage.getItem(STORAGE_KEYS.AUTH_USER);
-      if (data) return JSON.parse(data);
-      // Exigir login explícito na primeira página
+      const sessionData = sessionStorage.getItem(STORAGE_KEYS.AUTH_USER);
+      if (sessionData) return JSON.parse(sessionData);
+
+      const localData = localStorage.getItem(STORAGE_KEYS.AUTH_USER);
+      if (localData) return JSON.parse(localData);
+
       return null;
     } catch {
       return null;
     }
   },
 
-  setAuthUser(user: UserAccount | null) {
+  setAuthUser(user: UserAccount | null, rememberMe: boolean = true) {
     if (user) {
-      localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+      if (rememberMe) {
+        localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+        sessionStorage.removeItem(STORAGE_KEYS.AUTH_USER);
+      } else {
+        sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+        localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
+      }
     } else {
       localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
+      sessionStorage.removeItem(STORAGE_KEYS.AUTH_USER);
     }
   },
 

@@ -6,20 +6,15 @@ import {
   Lock, 
   Mail, 
   ArrowRight, 
-  Sparkles, 
   UserPlus, 
-  X,
-  Building2,
-  CheckCircle2,
-  BarChart3,
-  Smartphone,
-  Crown
+  X, 
+  Building2 
 } from 'lucide-react';
 
 interface LoginScreenProps {
   users: UserAccount[];
   companies?: Company[];
-  onLoginSuccess: (user: UserAccount) => void;
+  onLoginSuccess: (user: UserAccount, rememberMe?: boolean) => void;
   onRegisterUser?: (user: UserAccount) => void;
   isNeonConnected?: boolean | null;
 }
@@ -44,6 +39,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 }) => {
   const [emailOrBadge, setEmailOrBadge] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Modal para criar nova conta na tela de login
@@ -87,11 +83,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       }
     }
 
-    onLoginSuccess(foundUser);
-  };
-
-  const handleQuickLogin = (user: UserAccount) => {
-    onLoginSuccess(user);
+    onLoginSuccess(foundUser, rememberMe);
   };
 
   const handleCreateAccountSubmit = (e: React.FormEvent) => {
@@ -139,32 +131,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     }
 
     setIsRegisterOpen(false);
-    onLoginSuccess(newUser);
-  };
-
-  const getRoleBadge = (role: UserRole) => {
-    switch (role) {
-      case 'ADMIN':
-        return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-            <Crown className="w-3 h-3 text-amber-600" /> Admin
-          </span>
-        );
-      case 'VIEWER':
-        return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
-            <BarChart3 className="w-3 h-3 text-blue-600" /> Visualizador
-          </span>
-        );
-      case 'OPERATOR':
-        return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-            <Smartphone className="w-3 h-3 text-emerald-600" /> Operador
-          </span>
-        );
-      default:
-        return null;
-    }
+    onLoginSuccess(newUser, rememberMe);
   };
 
   return (
@@ -281,6 +248,20 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               />
             </div>
 
+            <div className="flex items-center justify-between pt-0.5 pb-1">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-slate-600 hover:text-slate-900 group">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-500 focus:ring-offset-0 cursor-pointer accent-emerald-700 transition-all"
+                />
+                <span className="font-semibold group-hover:text-emerald-950 transition-colors">
+                  Manter-me conectado
+                </span>
+              </label>
+            </div>
+
             <button
               type="submit"
               className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-extrabold text-xs shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2"
@@ -289,51 +270,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
-
-          {/* Quick Login Section (1-Click for Testing) */}
-          <div className="pt-3 border-t border-slate-100 space-y-2.5">
-            <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Acesso Rápido por Perfil (1-Clique)</span>
-              </span>
-              <span className="text-[10px] text-emerald-700 font-mono">
-                {users.length} usuários
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 gap-2 max-h-56 overflow-y-auto pr-1">
-              {users.map((user) => (
-                <button
-                  key={user.id}
-                  onClick={() => handleQuickLogin(user)}
-                  className="p-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 rounded-2xl text-left transition-all group flex items-center gap-3"
-                  title={`Entrar como ${user.name}`}
-                >
-                  <div className={`w-9 h-9 rounded-xl text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm ${user.avatarColor || 'bg-emerald-600'}`}>
-                    {user.initials}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="font-extrabold text-xs text-slate-900 truncate group-hover:text-emerald-900">
-                        {user.name}
-                      </span>
-                      {getRoleBadge(user.role)}
-                    </div>
-                    <div className="text-[10px] text-slate-500 flex items-center gap-1.5 truncate mt-0.5">
-                      {user.companyName ? (
-                        <span className="truncate text-slate-600 font-medium">🏢 {user.companyName}</span>
-                      ) : (
-                        <span className="text-amber-700 font-medium">🌐 Acesso Global</span>
-                      )}
-                      <span>•</span>
-                      <span className="font-mono text-slate-400">Mat: {user.badgeNumber}</span>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Footer Note */}
