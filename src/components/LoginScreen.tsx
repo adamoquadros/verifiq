@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import type { UserAccount } from '../types';
+import type { UserAccount, Company, UserRole } from '../types';
+import { VerifIQLogo } from './VerifIQLogo';
 import { 
   ShieldCheck, 
   Lock, 
@@ -8,13 +9,16 @@ import {
   Sparkles, 
   UserPlus, 
   X,
-  KeyRound,
-  IdCard,
-  UserCheck
+  Building2,
+  CheckCircle2,
+  BarChart3,
+  Smartphone,
+  Crown
 } from 'lucide-react';
 
 interface LoginScreenProps {
   users: UserAccount[];
+  companies?: Company[];
   onLoginSuccess: (user: UserAccount) => void;
   onRegisterUser?: (user: UserAccount) => void;
   isNeonConnected?: boolean | null;
@@ -33,6 +37,7 @@ const AVATAR_COLORS = [
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({
   users,
+  companies = [],
   onLoginSuccess,
   onRegisterUser,
   isNeonConnected
@@ -47,7 +52,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regBadge, setRegBadge] = useState('');
-  const [regRole, setRegRole] = useState<'ADMIN' | 'SUPERVISOR' | 'OPERATOR'>('OPERATOR');
+  const [regRole, setRegRole] = useState<UserRole>('VIEWER');
+  const [regCompanyId, setRegCompanyId] = useState('');
   const [regColor, setRegColor] = useState('bg-emerald-600');
   const [regError, setRegError] = useState<string | null>(null);
 
@@ -107,6 +113,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       return;
     }
 
+    const targetCompanyId = regRole === 'ADMIN' 
+      ? undefined 
+      : (regCompanyId || (companies.length > 0 ? companies[0].id : 'comp-herbarium'));
+    
+    const targetCompanyName = targetCompanyId 
+      ? (companies.find(c => c.id === targetCompanyId)?.name || 'Herbarium Laboratório')
+      : undefined;
+
     const newUser: UserAccount = {
       id: `usr-${Date.now()}`,
       name: regName.trim(),
@@ -114,6 +128,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       password: regPassword.trim() || '1234',
       badgeNumber: regBadge.trim() || String(Math.floor(1000 + Math.random() * 9000)),
       role: regRole,
+      companyId: targetCompanyId,
+      companyName: targetCompanyName,
       avatarColor: regColor,
       initials: computeInitials(regName)
     };
@@ -123,8 +139,32 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     }
 
     setIsRegisterOpen(false);
-    // Realiza login automático com a nova conta criada
     onLoginSuccess(newUser);
+  };
+
+  const getRoleBadge = (role: UserRole) => {
+    switch (role) {
+      case 'ADMIN':
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+            <Crown className="w-3 h-3 text-amber-600" /> Admin
+          </span>
+        );
+      case 'VIEWER':
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+            <BarChart3 className="w-3 h-3 text-blue-600" /> Visualizador
+          </span>
+        );
+      case 'OPERATOR':
+        return (
+          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+            <Smartphone className="w-3 h-3 text-emerald-600" /> Operador
+          </span>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -137,19 +177,22 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       <div className="max-w-md w-full relative z-10 space-y-6 animate-in fade-in zoom-in-95 duration-300">
         
         {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white text-3xl shadow-xl shadow-emerald-900/40 ring-4 ring-emerald-500/20 mb-2">
-            🌿
+        <div className="text-center space-y-3 flex flex-col items-center">
+          <div className="p-3.5 rounded-3xl bg-slate-800/80 border border-emerald-500/30 shadow-2xl shadow-emerald-950/60 ring-4 ring-emerald-500/10 backdrop-blur-md transition-transform hover:scale-105 duration-300">
+            <VerifIQLogo size="lg" showText={false} />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
-            <span>VerifIQ</span>
-            <span className="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full font-mono">
-              BPF
-            </span>
-          </h1>
-          <p className="text-xs sm:text-sm text-emerald-200/80 font-medium">
-            Sistema Digital de Gestão, Controle & Rastreabilidade BPF
-          </p>
+
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+              <span>Verif<span className="text-emerald-400">IQ</span></span>
+              <span className="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full font-mono">
+                BPF
+              </span>
+            </h1>
+            <p className="text-xs sm:text-sm text-emerald-200/80 font-medium">
+              Sistema Digital de Gestão, Controle & Rastreabilidade BPF
+            </p>
+          </div>
 
           {/* Status do Neon DB */}
           <div className="flex justify-center pt-1">
@@ -178,7 +221,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               </div>
               <div>
                 <h2 className="font-extrabold text-sm text-slate-900">Acesso ao Sistema</h2>
-                <p className="text-[11px] text-slate-500">Identifique-se para iniciar os registros</p>
+                <p className="text-[11px] text-slate-500">Identifique-se para iniciar</p>
               </div>
             </div>
 
@@ -189,6 +232,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 setRegEmail('');
                 setRegPassword('');
                 setRegBadge(String(Math.floor(1000 + Math.random() * 9000)));
+                setRegRole('VIEWER');
+                if (companies.length > 0) setRegCompanyId(companies[0].id);
                 setRegError(null);
                 setIsRegisterOpen(true);
               }}
@@ -250,30 +295,39 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider">
               <span className="flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Contas para Teste Rápido (1-Clique)</span>
+                <span>Acesso Rápido por Perfil (1-Clique)</span>
               </span>
               <span className="text-[10px] text-emerald-700 font-mono">
-                {users.length} disponíveis
+                {users.length} usuários
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 gap-2 max-h-56 overflow-y-auto pr-1">
               {users.map((user) => (
                 <button
                   key={user.id}
                   onClick={() => handleQuickLogin(user)}
-                  className="p-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 rounded-2xl text-left transition-all group flex items-center gap-2.5"
+                  className="p-2.5 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 border border-slate-200 rounded-2xl text-left transition-all group flex items-center gap-3"
                   title={`Entrar como ${user.name}`}
                 >
-                  <div className={`w-8 h-8 rounded-xl text-white font-bold text-xs flex items-center justify-center shrink-0 ${user.avatarColor || 'bg-emerald-600'}`}>
+                  <div className={`w-9 h-9 rounded-xl text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm ${user.avatarColor || 'bg-emerald-600'}`}>
                     {user.initials}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="font-extrabold text-[11px] text-slate-900 truncate group-hover:text-emerald-900">
-                      {user.name}
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="font-extrabold text-xs text-slate-900 truncate group-hover:text-emerald-900">
+                        {user.name}
+                      </span>
+                      {getRoleBadge(user.role)}
                     </div>
-                    <div className="text-[9px] text-emerald-700 font-semibold truncate">
-                      {user.role === 'ADMIN' ? '👑 Admin' : user.role === 'SUPERVISOR' ? '⭐ Supervisor' : '✓ Operador'}
+                    <div className="text-[10px] text-slate-500 flex items-center gap-1.5 truncate mt-0.5">
+                      {user.companyName ? (
+                        <span className="truncate text-slate-600 font-medium">🏢 {user.companyName}</span>
+                      ) : (
+                        <span className="text-amber-700 font-medium">🌐 Acesso Global</span>
+                      )}
+                      <span>•</span>
+                      <span className="font-mono text-slate-400">Mat: {user.badgeNumber}</span>
                     </div>
                   </div>
                 </button>
@@ -284,7 +338,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
         {/* Footer Note */}
         <div className="text-center text-[11px] text-emerald-100/60 font-medium">
-          Sistema em conformidade com as Boas Práticas de Fabricação (BPF / GMP)
+          Sistema VerifIQ • Em conformidade com as Boas Práticas de Fabricação (BPF / GMP)
         </div>
       </div>
 
@@ -325,7 +379,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   required
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
-                  placeholder="Ex: Carlos Andrade"
+                  placeholder="Ex: Mariana Silveira"
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
               </div>
@@ -337,7 +391,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     type="email"
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
-                    placeholder="carlos@herbarium.com"
+                    placeholder="mariana@cliente.com"
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                 </div>
@@ -365,18 +419,47 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Perfil de Acesso</label>
+                  <label className="block font-bold text-slate-700 mb-1">Perfil de Acesso *</label>
                   <select
                     value={regRole}
-                    onChange={(e) => setRegRole(e.target.value as any)}
+                    onChange={(e) => setRegRole(e.target.value as UserRole)}
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   >
-                    <option value="OPERATOR">Operador (Check)</option>
-                    <option value="SUPERVISOR">Supervisor</option>
-                    <option value="ADMIN">Administrador (Total)</option>
+                    <option value="VIEWER">📊 Visualizador (Cliente)</option>
+                    <option value="OPERATOR">📱 Operador (Check)</option>
+                    <option value="ADMIN">👑 Administrador (Total)</option>
                   </select>
                 </div>
               </div>
+
+              {/* Se for Visualizador ou Operador, selecione a empresa vinculada */}
+              {regRole !== 'ADMIN' && (
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Empresa Vinculada *</span>
+                  </label>
+                  <select
+                    value={regCompanyId || (companies[0]?.id || '')}
+                    onChange={(e) => setRegCompanyId(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  >
+                    {companies.length === 0 && (
+                      <option value="comp-herbarium">Herbarium Laboratório Botânico</option>
+                    )}
+                    {companies.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    {regRole === 'VIEWER' 
+                      ? 'O visualizador só poderá acessar os dashboards e dados desta empresa.'
+                      : 'O operador só poderá operar e registrar checks desta empresa.'}
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="block font-bold text-slate-700 mb-1.5">Cor do Avatar</label>
@@ -414,3 +497,4 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     </div>
   );
 };
+

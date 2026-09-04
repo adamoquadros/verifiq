@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import type { Company, DocumentControl, CheckRecord, UserAccount } from '../types';
+import { INITIAL_USERS } from '../data/initialData';
 
 // Connection string oficial do Neon PostgreSQL (Pooler AWS sa-east-1)
 const NEON_CONNECTION_STRING = 
@@ -99,16 +100,53 @@ export const neonCloud = {
         locationValidation: r.location_validation !== false
       }));
 
-      const users: UserAccount[] = rawUsers.map((u: any) => ({
-        id: u.id,
-        name: u.name,
-        email: u.email,
-        password: u.password,
-        initials: u.initials,
-        badgeNumber: u.badge_number,
-        role: u.role,
-        avatarColor: u.avatar_color
-      }));
+      // Garante que a coluna company_id exista na tabela
+      try {
+        await sql`ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS company_id VARCHAR(100)`;
+      } catch {}
+
+      // Se os perfis padrão para teste não existirem no Neon, insere-os
+      const existingUserIds = new Set(rawUsers.map((u: any) => u.id));
+      for (const demoUser of INITIAL_USERS) {
+        if (!existingUserIds.has(demoUser.id)) {
+          try {
+            await sql`
+              INSERT INTO user_accounts (id, name, email, password, initials, badge_number, role, avatar_color, company_id)
+              VALUES (${demoUser.id}, ${demoUser.name}, ${demoUser.email}, ${demoUser.password}, ${demoUser.initials}, ${demoUser.badgeNumber}, ${demoUser.role}, ${demoUser.avatarColor}, ${demoUser.companyId || null})
+              ON CONFLICT (id) DO NOTHING;
+            `;
+            rawUsers.push({
+              id: demoUser.id,
+              name: demoUser.name,
+              email: demoUser.email,
+              password: demoUser.password,
+              initials: demoUser.initials,
+              badge_number: demoUser.badgeNumber,
+              role: demoUser.role,
+              avatar_color: demoUser.avatarColor,
+              company_id: demoUser.companyId || null
+            });
+          } catch (e) {
+            console.warn('Erro ao sincronizar demo user:', e);
+          }
+        }
+      }
+
+      const users: UserAccount[] = rawUsers.map((u: any) => {
+        const company = u.company_id ? companies.find(c => c.id === u.company_id) : undefined;
+        return {
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          password: u.password,
+          initials: u.initials,
+          badgeNumber: u.badge_number,
+          role: (u.role === 'SUPERVISOR' ? 'VIEWER' : u.role) || 'OPERATOR',
+          avatarColor: u.avatar_color,
+          companyId: u.company_id || undefined,
+          companyName: company?.name
+        };
+      });
 
       return {
         ok: true,
@@ -126,9 +164,16 @@ export const neonCloud = {
   // 3. Usuários (Salvar / Criar / Editar)
   async saveUser(u: UserAccount): Promise<boolean> {
     try {
+      // Garante que a coluna company_id exista na tabela
+      try {
+        await sql`ALTER TABLE user_accounts ADD COLUMN IF NOT EXISTS company_id VARCHAR(100)`;
+      } catch {
+        // ignora se já existir
+      }
+
       await sql`
-        INSERT INTO user_accounts (id, name, email, password, initials, badge_number, role, avatar_color)
-        VALUES (${u.id}, ${u.name}, ${u.email || ''}, ${u.password || '1234'}, ${u.initials}, ${u.badgeNumber}, ${u.role}, ${u.avatarColor})
+        INSERT INTO user_accounts (id, name, email, password, initials, badge_number, role, avatar_color, company_id)
+        VALUES (${u.id}, ${u.name}, ${u.email || ''}, ${u.password || '1234'}, ${u.initials}, ${u.badgeNumber}, ${u.role}, ${u.avatarColor}, ${u.companyId || null})
         ON CONFLICT (id) DO UPDATE SET
           name = EXCLUDED.name,
           email = EXCLUDED.email,
@@ -136,7 +181,8 @@ export const neonCloud = {
           initials = EXCLUDED.initials,
           badge_number = EXCLUDED.badge_number,
           role = EXCLUDED.role,
-          avatar_color = EXCLUDED.avatar_color;
+          avatar_color = EXCLUDED.avatar_color,
+          company_id = EXCLUDED.company_id;
       `;
       return true;
     } catch (err) {

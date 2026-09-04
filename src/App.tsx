@@ -8,10 +8,11 @@ import type {
 } from './types';
 import { storage } from './utils/storage';
 import { api } from './services/api';
-import { Header } from './components/Header';
+import { Header, type AppTab } from './components/Header';
 import { LoginScreen } from './components/LoginScreen';
 import { CompanyHubView } from './components/CompanyHubView';
 import { CompanyModal } from './components/CompanyModal';
+import { DashboardView } from './components/DashboardView';
 import { DocumentMatrix } from './components/DocumentMatrix';
 import { MobileCheckView } from './components/MobileCheckView';
 import { QRCodeGeneratorView } from './components/QRCodeGeneratorView';
@@ -28,8 +29,13 @@ export function App() {
   // Authentication State
   const [authUser, setAuthUser] = useState<UserAccount | null>(() => storage.getAuthUser());
 
-  // Navigation State
-  const [activeTab, setActiveTab] = useState<'home' | 'matrix' | 'mobile' | 'qrcodes' | 'reports' | 'settings'>('home');
+  // Navigation State (initialized according to user role)
+  const [activeTab, setActiveTab] = useState<AppTab>(() => {
+    const initialUser = storage.getAuthUser();
+    if (initialUser?.role === 'OPERATOR') return 'mobile';
+    if (initialUser?.role === 'VIEWER') return 'dashboard';
+    return 'home';
+  });
 
   // Multi-Company State
   const [companies, setCompanies] = useState<Company[]>(() => storage.getCompanies());
@@ -88,6 +94,30 @@ export function App() {
       isMounted = false;
     };
   }, []);
+
+  // Role-based navigation guard & company lock
+  useEffect(() => {
+    if (!authUser) return;
+
+    // Force company lock for VIEWER and OPERATOR
+    if (authUser.companyId && activeCompanyId !== authUser.companyId) {
+      if (companies.some(c => c.id === authUser.companyId)) {
+        setActiveCompanyId(authUser.companyId);
+        storage.setActiveCompanyId(authUser.companyId);
+      }
+    }
+
+    // Strict Role Tab Restrictions
+    if (authUser.role === 'OPERATOR') {
+      if (activeTab !== 'mobile') {
+        setActiveTab('mobile');
+      }
+    } else if (authUser.role === 'VIEWER') {
+      if (activeTab !== 'dashboard' && activeTab !== 'matrix' && activeTab !== 'reports') {
+        setActiveTab('dashboard');
+      }
+    }
+  }, [authUser, activeTab, activeCompanyId, companies]);
 
   // Modal States
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -149,6 +179,25 @@ export function App() {
   const handleLoginSuccess = (user: UserAccount) => {
     setAuthUser(user);
     storage.setAuthUser(user);
+
+    if (user.companyId && companies.some(c => c.id === user.companyId)) {
+      setActiveCompanyId(user.companyId);
+      storage.setActiveCompanyId(user.companyId);
+      const targetComp = companies.find(c => c.id === user.companyId);
+      if (targetComp && targetComp.controls.length > 0) {
+        setActiveControlId(targetComp.controls[0].id);
+        storage.setActiveControlId(targetComp.controls[0].id);
+      }
+    }
+
+    if (user.role === 'OPERATOR') {
+      setActiveTab('mobile');
+      setIsQRScannerOpen(true);
+    } else if (user.role === 'VIEWER') {
+      setActiveTab('dashboard');
+    } else {
+      setActiveTab('home');
+    }
   };
 
   const handleLogout = () => {
@@ -198,7 +247,7 @@ export function App() {
       setActiveControlId(comp.controls[0].id);
       storage.setActiveControlId(comp.controls[0].id);
     }
-    setActiveTab('matrix'); // Go to document matrix on selection
+    setActiveTab('dashboard'); // Go to real-time dashboard on company selection
   };
 
   const handleSaveCompany = (comp: Company) => {
@@ -405,6 +454,7 @@ export function App() {
     return (
       <LoginScreen
         users={users}
+        companies={companies}
         onLoginSuccess={handleLoginSuccess}
         onRegisterUser={handleSaveUser}
         isNeonConnected={isNeonConnected}
@@ -451,7 +501,6 @@ export function App() {
           onResetData={handleResetData}
           onExportBackup={handleExportBackup}
           onImportBackup={handleImportBackup}
-          isNeonConnected={isNeonConnected}
         />
 
         {/* PWA Install Banner */}
@@ -491,6 +540,20 @@ export function App() {
               onOpenCreateCompany={handleOpenCreateCompany}
               onOpenEditCompany={handleOpenEditCompany}
               onDeleteCompany={handleDeleteCompany}
+            />
+          )}
+
+          {/* TAB: REAL-TIME DASHBOARD & B.I */}
+          {activeTab === 'dashboard' && activeControl && (
+            <DashboardView
+              company={activeCompany}
+              controls={activeCompany.controls}
+              activeControl={activeControl}
+              records={records}
+              users={users}
+              activeUser={authUser}
+              onNavigateToMatrix={() => setActiveTab('matrix')}
+              onNavigateToReports={() => setActiveTab('reports')}
             />
           )}
 
@@ -614,6 +677,7 @@ export function App() {
         onClose={() => setIsUserManagementOpen(false)}
         users={users}
         authUser={authUser}
+        companies={companies}
         onSaveUser={handleSaveUser}
         onDeleteUser={handleDeleteUser}
       />

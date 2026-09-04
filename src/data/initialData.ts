@@ -549,42 +549,48 @@ export const INITIAL_COMPANIES: Company[] = [
 export const INITIAL_USERS: UserAccount[] = [
   {
     id: 'usr-1',
-    name: 'Adamo Rocha',
-    email: 'admin@herbarium.com',
+    name: 'Adamo Quadros',
+    email: 'adamo@verifiq.com',
     password: 'admin',
-    initials: 'AR',
+    initials: 'AQ',
     badgeNumber: '2085',
     role: 'ADMIN',
     avatarColor: 'bg-purple-700'
   },
   {
     id: 'usr-2',
-    name: 'Carlos Silva',
-    email: 'carlos.silva@herbarium.com',
-    password: 'admin',
+    name: 'Carlos Silva (Cliente)',
+    email: 'carlos.cliente@herbarium.com',
+    password: '1234',
     initials: 'CS',
     badgeNumber: '1042',
-    role: 'ADMIN',
+    role: 'VIEWER',
+    companyId: 'comp-herbarium',
+    companyName: 'Herbarium',
     avatarColor: 'bg-blue-600'
   },
   {
     id: 'usr-3',
-    name: 'Mariana Ramos',
-    email: 'mariana.ramos@herbarium.com',
-    password: 'admin',
+    name: 'Mariana Ramos (Operadora)',
+    email: 'mariana.op@herbarium.com',
+    password: '1234',
     initials: 'MR',
     badgeNumber: '1109',
-    role: 'ADMIN',
+    role: 'OPERATOR',
+    companyId: 'comp-herbarium',
+    companyName: 'Herbarium',
     avatarColor: 'bg-emerald-600'
   },
   {
     id: 'usr-4',
-    name: 'João Costa',
-    email: 'joao.costa@herbarium.com',
-    password: 'admin',
+    name: 'João Costa (Operador)',
+    email: 'joao.op@herbarium.com',
+    password: '1234',
     initials: 'JC',
     badgeNumber: '1054',
-    role: 'ADMIN',
+    role: 'OPERATOR',
+    companyId: 'comp-herbarium',
+    companyName: 'Herbarium',
     avatarColor: 'bg-amber-600'
   }
 ];

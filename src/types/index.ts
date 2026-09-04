@@ -28,19 +28,24 @@ export interface TaskItem {
   active: boolean;
 }
 
+export type UserRole = 'ADMIN' | 'VIEWER' | 'OPERATOR';
+
 export interface UserOperator {
   id: string;
   name: string;
   initials: string;
   badgeNumber: string;
   email?: string;
-  role: 'ADMIN' | 'SUPERVISOR' | 'OPERATOR';
+  role: UserRole;
   avatarColor: string;
+  companyId?: string; // Obrigatório para VIEWER e OPERATOR
+  companyName?: string;
 }
 
 export interface UserAccount extends UserOperator {
   password?: string;
 }
+
 
 export interface DocumentControl {
   id: string;

@@ -47,7 +47,7 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'ADMIN': return 'Administrador do Sistema';
-      case 'SUPERVISOR': return 'Supervisor de Qualidade & Processos';
+      case 'VIEWER': return 'Visualizador (Cliente)';
       default: return 'Operador Técnico';
     }
   };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { UserAccount } from '../types';
+import type { UserAccount, Company, UserRole } from '../types';
 import { 
   X, 
   Users, 
@@ -16,7 +16,11 @@ import {
   AlertCircle,
   KeyRound,
   Search,
-  UserCog
+  UserCog,
+  Building2,
+  Crown,
+  BarChart3,
+  Smartphone
 } from 'lucide-react';
 
 interface UserManagementModalProps {
@@ -24,6 +28,7 @@ interface UserManagementModalProps {
   onClose: () => void;
   users: UserAccount[];
   authUser: UserAccount;
+  companies: Company[];
   onSaveUser: (user: UserAccount) => void;
   onDeleteUser: (userId: string) => void;
 }
@@ -44,12 +49,13 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
   onClose,
   users,
   authUser,
+  companies,
   onSaveUser,
   onDeleteUser
 }) => {
   const [activeTab, setActiveTab] = useState<'list' | 'create' | 'my-profile'>('list');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterRole, setFilterRole] = useState<'ALL' | 'ADMIN' | 'SUPERVISOR' | 'OPERATOR'>('ALL');
+  const [filterRole, setFilterRole] = useState<'ALL' | 'ADMIN' | 'VIEWER' | 'OPERATOR'>('ALL');
   
   // Edit State
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
@@ -61,9 +67,11 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
     email: string;
     password: string;
     badgeNumber: string;
-    role: 'ADMIN' | 'SUPERVISOR' | 'OPERATOR';
+    role: 'ADMIN' | 'VIEWER' | 'OPERATOR';
     avatarColor: string;
     initials: string;
+    companyId?: string;
+    companyName?: string;
   }>({
     name: '',
     email: '',
@@ -71,7 +79,9 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
     badgeNumber: '',
     role: 'OPERATOR',
     avatarColor: 'bg-emerald-600',
-    initials: ''
+    initials: '',
+    companyId: companies[0]?.id || '',
+    companyName: companies[0]?.name || ''
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -105,7 +115,9 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
       badgeNumber: String(Math.floor(1000 + Math.random() * 9000)),
       role: 'OPERATOR',
       avatarColor: 'bg-emerald-600',
-      initials: ''
+      initials: '',
+      companyId: companies[0]?.id || '',
+      companyName: companies[0]?.name || ''
     });
     setShowPassword(false);
     setActiveTab('create');
@@ -113,6 +125,7 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
 
   const handleOpenEdit = (user: UserAccount) => {
     setEditingUserId(user.id);
+    const userCompany = companies.find(c => c.id === user.companyId) || companies[0];
     setFormData({
       id: user.id,
       name: user.name,
@@ -121,7 +134,9 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
       badgeNumber: user.badgeNumber || '',
       role: user.role,
       avatarColor: user.avatarColor || 'bg-emerald-600',
-      initials: user.initials || computeInitials(user.name)
+      initials: user.initials || computeInitials(user.name),
+      companyId: user.companyId || userCompany?.id || '',
+      companyName: user.companyName || userCompany?.name || ''
     });
     setShowPassword(false);
     setActiveTab('create');
@@ -137,7 +152,9 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
       badgeNumber: authUser.badgeNumber || '',
       role: authUser.role,
       avatarColor: authUser.avatarColor || 'bg-purple-700',
-      initials: authUser.initials || computeInitials(authUser.name)
+      initials: authUser.initials || computeInitials(authUser.name),
+      companyId: authUser.companyId,
+      companyName: authUser.companyName
     });
     setShowPassword(false);
     setActiveTab('my-profile');
@@ -171,6 +188,7 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
     }
 
     const initials = formData.initials.trim().toUpperCase() || computeInitials(formData.name);
+    const selectedCompany = companies.find(c => c.id === formData.companyId);
 
     const userToSave: UserAccount = {
       id: formData.id || `usr-${Date.now()}`,
@@ -180,7 +198,9 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
       badgeNumber: formData.badgeNumber.trim() || String(Math.floor(1000 + Math.random() * 9000)),
       role: formData.role,
       avatarColor: formData.avatarColor,
-      initials
+      initials,
+      companyId: formData.role === 'ADMIN' ? undefined : (formData.companyId || companies[0]?.id),
+      companyName: formData.role === 'ADMIN' ? undefined : (selectedCompany?.name || companies[0]?.name)
     };
 
     onSaveUser(userToSave);
@@ -353,12 +373,12 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
                     Admins
                   </button>
                   <button
-                    onClick={() => setFilterRole('SUPERVISOR')}
+                    onClick={() => setFilterRole('VIEWER')}
                     className={`px-2.5 py-1 rounded-lg transition-all ${
-                      filterRole === 'SUPERVISOR' ? 'bg-white text-blue-800 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                      filterRole === 'VIEWER' ? 'bg-white text-blue-800 shadow-xs' : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    Supervisores
+                    Visualizadores
                   </button>
                   <button
                     onClick={() => setFilterRole('OPERATOR')}
@@ -414,7 +434,7 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
                               Mat: {user.badgeNumber}
                             </span>
                             <span className="font-bold text-emerald-700">
-                              {user.role === 'ADMIN' ? '👑 Admin' : user.role === 'SUPERVISOR' ? '🛡️ Supervisor' : '📋 Operador'}
+                              {user.role === 'ADMIN' ? '👑 Admin' : user.role === 'VIEWER' ? '📊 Visualizador' : '📱 Operador'}
                             </span>
                             {user.password && (
                               <span className="text-slate-400 flex items-center gap-0.5" title="Conta protegida por senha">
@@ -574,11 +594,36 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
                     onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   >
-                    <option value="ADMIN">👑 Administrador (Acesso Total)</option>
-                    <option value="SUPERVISOR">🛡️ Supervisor (Controle e Auditoria)</option>
-                    <option value="OPERATOR">📋 Operador (Preenchimento e Checks)</option>
+                    <option value="ADMIN">👑 Administrador (Acesso Total a Todas as Empresas)</option>
+                    <option value="VIEWER">📊 Visualizador / Cliente (Monitoramento & B.I da Empresa)</option>
+                    <option value="OPERATOR">📱 Operador (Execução de Checks & Scanner QR)</option>
                   </select>
                 </div>
+
+                {/* Empresa Vinculada (Obrigatório para Visualizadores e Operadores) */}
+                {formData.role !== 'ADMIN' && (
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      Empresa Vinculada ao Acesso: *
+                    </label>
+                    <select
+                      value={formData.companyId || (companies[0]?.id || '')}
+                      onChange={(e) => {
+                        const comp = companies.find(c => c.id === e.target.value);
+                        setFormData({ 
+                          ...formData, 
+                          companyId: e.target.value,
+                          companyName: comp?.name
+                        });
+                      }}
+                      className="w-full px-3.5 py-2.5 bg-emerald-50/60 border border-emerald-300 rounded-xl font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    >
+                      {companies.map(c => (
+                        <option key={c.id} value={c.id}>{c.name} ({c.tradeName || c.name})</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {/* Rubrica Customizada */}
                 <div>

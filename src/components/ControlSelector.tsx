@@ -17,10 +17,10 @@ interface ControlSelectorProps {
   controls: DocumentControl[];
   activeControl: DocumentControl;
   onSelectControl: (control: DocumentControl) => void;
-  onOpenCreateControl: () => void;
-  onOpenEditControl: (control: DocumentControl) => void;
-  onDuplicateControl: (controlId: string) => void;
-  onDeleteControl: (controlId: string) => void;
+  onOpenCreateControl?: () => void;
+  onOpenEditControl?: (control: DocumentControl) => void;
+  onDuplicateControl?: (controlId: string) => void;
+  onDeleteControl?: (controlId: string) => void;
 }
 
 export const ControlSelector: React.FC<ControlSelectorProps> = ({
@@ -106,16 +106,18 @@ export const ControlSelector: React.FC<ControlSelectorProps> = ({
                 />
               </div>
 
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenCreateControl();
-                }}
-                className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Criar Novo Modelo de Controle</span>
-              </button>
+              {onOpenCreateControl && (
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    onOpenCreateControl();
+                  }}
+                  className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Criar Novo Modelo de Controle</span>
+                </button>
+              )}
             </div>
 
             {/* Controls List */}
@@ -165,29 +167,33 @@ export const ControlSelector: React.FC<ControlSelectorProps> = ({
                           </span>
                         )}
 
-                        <button
-                          onClick={() => {
-                            setIsOpen(false);
-                            onOpenEditControl(ctrl);
-                          }}
-                          className="p-1.5 text-slate-400 hover:text-emerald-700 hover:bg-white rounded-lg transition-colors"
-                          title="Editar Colunas e Metadados"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
+                        {onOpenEditControl && (
+                          <button
+                            onClick={() => {
+                              setIsOpen(false);
+                              onOpenEditControl(ctrl);
+                            }}
+                            className="p-1.5 text-slate-400 hover:text-emerald-700 hover:bg-white rounded-lg transition-colors"
+                            title="Editar Colunas e Metadados"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
 
-                        <button
-                          onClick={() => {
-                            onDuplicateControl(ctrl.id);
-                            setIsOpen(false);
-                          }}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-white rounded-lg transition-colors"
-                          title="Duplicar este Modelo"
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                        </button>
+                        {onDuplicateControl && (
+                          <button
+                            onClick={() => {
+                              onDuplicateControl(ctrl.id);
+                              setIsOpen(false);
+                            }}
+                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-white rounded-lg transition-colors"
+                            title="Duplicar este Modelo"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        )}
 
-                        {controls.length > 1 && (
+                        {onDeleteControl && controls.length > 1 && (
                           <button
                             onClick={() => {
                               if (confirm(`Deseja realmente excluir o modelo "${ctrl.title}"?`)) {
