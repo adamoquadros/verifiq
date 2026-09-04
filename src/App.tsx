@@ -7,6 +7,7 @@ import type {
   TaskItem 
 } from './types';
 import { storage } from './utils/storage';
+import { api } from './services/api';
 import { Header } from './components/Header';
 import { LoginScreen } from './components/LoginScreen';
 import { CompanyHubView } from './components/CompanyHubView';
@@ -47,6 +48,46 @@ export function App() {
   // Records & Users State
   const [records, setRecords] = useState<CheckRecord[]>(() => storage.getRecords());
   const [users, setUsers] = useState<UserAccount[]>(() => storage.getUsers());
+
+  // Neon PostgreSQL Cloud Connection State
+  const [isNeonConnected, setIsNeonConnected] = useState<boolean | null>(null);
+
+  // Neon PostgreSQL Cloud Bootstrap & Sync
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadFromNeon() {
+      try {
+        const bootstrap = await api.getBootstrap();
+        if (isMounted && bootstrap && bootstrap.ok) {
+          if (bootstrap.companies && bootstrap.companies.length > 0) {
+            setCompanies(bootstrap.companies);
+            storage.saveCompanies(bootstrap.companies);
+          }
+          if (bootstrap.records) {
+            setRecords(bootstrap.records);
+            storage.saveRecords(bootstrap.records);
+          }
+          if (bootstrap.users && bootstrap.users.length > 0) {
+            setUsers(bootstrap.users);
+            storage.saveUsers(bootstrap.users);
+          }
+          setIsNeonConnected(true);
+        } else if (isMounted) {
+          setIsNeonConnected(false);
+        }
+      } catch (err) {
+        console.warn('Operando com armazenamento local de contingência:', err);
+        if (isMounted) setIsNeonConnected(false);
+      }
+    }
+
+    loadFromNeon();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Modal States
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
@@ -129,6 +170,7 @@ export function App() {
     }
     setUsers(updatedUsers);
     storage.saveUsers(updatedUsers);
+    api.saveUser(savedUser);
 
     // If updating current active session user, sync authUser
     if (authUser && authUser.id === savedUser.id) {
@@ -145,6 +187,7 @@ export function App() {
     const updatedUsers = users.filter(u => u.id !== userId);
     setUsers(updatedUsers);
     storage.saveUsers(updatedUsers);
+    api.deleteUser(userId);
   };
 
   // Company Handlers
@@ -163,12 +206,14 @@ export function App() {
     setCompanies(updated);
     setActiveCompanyId(comp.id);
     storage.setActiveCompanyId(comp.id);
+    api.saveCompany(comp);
   };
 
   const handleDeleteCompany = (compId: string) => {
     const remaining = storage.deleteCompany(compId);
     setCompanies(remaining);
     setActiveCompanyId(remaining[0].id);
+    api.deleteCompany(compId);
   };
 
   const handleOpenCreateCompany = () => {
@@ -204,12 +249,14 @@ export function App() {
     setCompanies(updatedCompanies);
     setActiveControlId(savedControl.id);
     storage.setActiveControlId(savedControl.id);
+    api.saveControl(ctrlWithCompany);
   };
 
   const handleDuplicateControl = (sourceId: string) => {
     const { newControl, companies: updatedCompanies } = storage.duplicateControl(sourceId);
     setCompanies(updatedCompanies);
     setActiveControlId(newControl.id);
+    api.saveControl(newControl);
     alert(`Modelo "${newControl.title}" duplicado com sucesso!`);
   };
 
@@ -220,6 +267,7 @@ export function App() {
       setActiveControlId(updatedCompany.controls[0].id);
     }
     setRecords(storage.getRecords());
+    api.deleteControl(controlId);
   };
 
   const handleOpenCreateControl = () => {
@@ -255,6 +303,7 @@ export function App() {
 
     setRecords(updated);
     storage.saveRecords(updated);
+    api.saveRecord(newRecord);
 
     // Auto-switch only if valid, existing and different
     if (newRecData.companyId && newRecData.companyId !== activeCompany.id && companies.some(c => c.id === newRecData.companyId)) {
@@ -271,6 +320,7 @@ export function App() {
     const updated = records.filter(r => r.id !== recordId);
     setRecords(updated);
     storage.saveRecords(updated);
+    api.deleteRecord(recordId);
   };
 
   const handleClearRecords = (controlId: string, month?: number, year?: number) => {
@@ -283,6 +333,7 @@ export function App() {
     });
     setRecords(updated);
     storage.saveRecords(updated);
+    api.clearRecords(controlId, month, year);
   };
 
   // Cell Click Handler
@@ -398,6 +449,7 @@ export function App() {
           onResetData={handleResetData}
           onExportBackup={handleExportBackup}
           onImportBackup={handleImportBackup}
+          isNeonConnected={isNeonConnected}
         />
 
         {/* PWA Install Banner */}

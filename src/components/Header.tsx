@@ -45,6 +45,7 @@ interface HeaderProps {
   onExportBackup: () => void;
   onImportBackup: (json: string) => void;
   pendingSyncCount?: number;
+  isNeonConnected?: boolean | null;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -66,7 +67,8 @@ export const Header: React.FC<HeaderProps> = ({
   onResetData,
   onExportBackup,
   onImportBackup,
-  pendingSyncCount = 0
+  pendingSyncCount = 0,
+  isNeonConnected = null
 }) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -168,6 +170,26 @@ export const Header: React.FC<HeaderProps> = ({
                 <Users className="w-3.5 h-3.5 text-emerald-600" />
                 <span className="hidden md:inline">Contas & E-mails</span>
               </button>
+            )}
+
+            {/* Neon PostgreSQL Cloud Indicator */}
+            {isNeonConnected === true && (
+              <div 
+                className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-[11px] font-bold"
+                title="Banco de Dados Neon PostgreSQL Conectado em Nuvem"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Neon DB</span>
+              </div>
+            )}
+            {isNeonConnected === false && (
+              <div 
+                className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-50 text-amber-800 border border-amber-200 rounded-xl text-[11px] font-bold"
+                title="Operando em contingência local (localStorage)"
+              >
+                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>Modo Local</span>
+              </div>
             )}
 
             {/* Quick QR Scan Button */}
