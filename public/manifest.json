@@ -1,0 +1,17 @@
+{
+  "short_name": "Herbarium Check",
+  "name": "Herbarium - Registro de Limpeza e Atividades",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23166534'/><text y='.75em' x='50%' text-anchor='middle' font-size='60'>🌿</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#166534",
+  "theme_color": "#166534",
+  "display": "standalone",
+  "orientation": "portrait"
+}
