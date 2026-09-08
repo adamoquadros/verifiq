@@ -142,6 +142,13 @@ export const ControlBuilderModal: React.FC<ControlBuilderModalProps> = ({
       sectors: prev.sectors.filter(s => s.id !== sectorId),
       tasks: prev.tasks.filter(t => t.sectorId !== sectorId)
     }));
+    // Se a coluna mãe selecionada no formulário de colunas era a que acabou
+    // de ser excluída, o ID ficaria "órfão" e as próximas colunas cadastradas
+    // seriam vinculadas a uma coluna mãe inexistente (desaparecendo do documento).
+    if (newColSectorId === sectorId) {
+      const remaining = control.sectors.filter(s => s.id !== sectorId);
+      setNewColSectorId(remaining[0]?.id || '');
+    }
   };
 
   // Task / Column actions
@@ -152,6 +159,10 @@ export const ControlBuilderModal: React.FC<ControlBuilderModalProps> = ({
     const code = newColCode.trim() || `ITEM-${control.tasks.length + 1}`;
     const sortedTimes = [...newColTimes].sort();
     const primaryTime = sortedTimes[0] || '08:00';
+    // Garante que a coluna nunca seja vinculada a uma coluna mãe que já foi excluída
+    const resolvedSectorId = control.sectors.some(s => s.id === newColSectorId)
+      ? newColSectorId
+      : control.sectors[0].id;
 
     if (editingColId) {
       // Atualizando coluna existente
@@ -163,7 +174,7 @@ export const ControlBuilderModal: React.FC<ControlBuilderModalProps> = ({
             ...t,
             code,
             name: newColName.trim(),
-            sectorId: newColSectorId || control.sectors[0].id,
+            sectorId: resolvedSectorId,
             recurrence: newColRecurrence,
             daysOfWeek: newColRecurrence === 'WEEKLY' ? newColDaysOfWeek : undefined,
             hasScheduledTime: newColHasSchedule,
@@ -181,7 +192,7 @@ export const ControlBuilderModal: React.FC<ControlBuilderModalProps> = ({
         id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
         code,
         name: newColName.trim(),
-        sectorId: newColSectorId || control.sectors[0].id,
+        sectorId: resolvedSectorId,
         recurrence: newColRecurrence,
         daysOfWeek: newColRecurrence === 'WEEKLY' ? newColDaysOfWeek : undefined,
         hasScheduledTime: newColHasSchedule,

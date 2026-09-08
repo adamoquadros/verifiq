@@ -246,8 +246,15 @@ export function App() {
     if (comp.controls.length > 0) {
       setActiveControlId(comp.controls[0].id);
       storage.setActiveControlId(comp.controls[0].id);
+      setActiveTab('dashboard'); // Go to real-time dashboard on company selection
+    } else {
+      // Empresa recém-criada sem nenhum modelo ainda: limpa o modelo ativo
+      // (senão fica preso no modelo da empresa anterior) e leva para a tela
+      // que sabe lidar com "nenhum modelo" e oferece criar o primeiro.
+      setActiveControlId('');
+      storage.setActiveControlId('');
+      setActiveTab('settings');
     }
-    setActiveTab('dashboard'); // Go to real-time dashboard on company selection
   };
 
   const handleSaveCompany = (comp: Company) => {
@@ -606,11 +613,11 @@ export function App() {
           )}
 
           {/* TAB 5: SETTINGS */}
-          {activeTab === 'settings' && activeControl && (
+          {activeTab === 'settings' && (
             <ScheduleConfigView
               company={activeCompany}
               controls={activeCompany.controls}
-              activeControl={activeControl}
+              activeControl={activeControl as DocumentControl}
               onSelectControl={handleSelectControl}
               onSaveControl={handleSaveControl}
               onDuplicateControl={handleDuplicateControl}
