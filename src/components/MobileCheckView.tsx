@@ -151,7 +151,7 @@ export const MobileCheckView: React.FC<MobileCheckViewProps> = ({
   return (
     <div className="space-y-4">
       {/* Active Control Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white rounded-3xl p-5 shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -162,7 +162,7 @@ export const MobileCheckView: React.FC<MobileCheckViewProps> = ({
                 {now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
               </span>
             </div>
-            <h2 className="text-lg md:text-xl font-black tracking-tight">{activeControl.title}</h2>
+            <h2 className="text-lg md:text-xl font-bold tracking-tight">{activeControl.title}</h2>
             <p className="text-xs text-emerald-200/90 mt-1">{activeControl.popRef}</p>
           </div>
 
@@ -188,7 +188,7 @@ export const MobileCheckView: React.FC<MobileCheckViewProps> = ({
             {/* QR Scan Button (Hero action) */}
             <button
               onClick={onOpenQRScanner}
-              className="px-4 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-black rounded-2xl flex items-center gap-2 text-xs shadow-md active:scale-95 transition-all"
+              className="px-4 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold rounded-2xl flex items-center gap-2 text-xs shadow-md active:scale-95 transition-all"
             >
               <QrCodeIcon className="w-4 h-4" />
               <span>Bipar QR Code</span>

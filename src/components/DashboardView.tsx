@@ -162,24 +162,24 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, [periodRecords]);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-8 animate-in fade-in duration-300">
       
       {/* 1. Header do Dashboard com Filtros Executivos */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold tracking-wide uppercase flex items-center gap-1.5">
-              <Activity className="w-3 h-3 text-emerald-600 animate-pulse" />
-              <span>B.I & Monitoramento em Tempo Real</span>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-emerald-600 flex items-center gap-1.5">
+              <Activity className="w-3 h-3 animate-pulse" />
+              <span>01 — B.I & Monitoramento em Tempo Real</span>
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-semibold">
               {company.name}
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>Painel de Inteligência & Auditoria BPF</span>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+            Painel de Inteligência & Auditoria BPF
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 mt-1.5">
             Acompanhe indicadores metrológicos, pontualidade operacional e rastreabilidade sanitária
           </p>
         </div>
@@ -241,15 +241,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* KPI 1: Conformidade Geral */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-emerald-300 transition-all">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-emerald-300 transition-all">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Conformidade BPF</span>
-            <div className="p-2 bg-emerald-100 rounded-2xl text-emerald-800">
+            <div className="p-2 bg-emerald-50 rounded-2xl text-emerald-700">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-900">{stats.complianceRate}%</span>
+            <span className="text-3xl font-bold text-slate-900">{stats.complianceRate}%</span>
             <span className="text-[11px] text-emerald-700 font-bold">Meta: 95%</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
@@ -265,15 +265,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* KPI 2: Índice de Pontualidade */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-blue-300 transition-all">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-blue-300 transition-all">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Pontualidade</span>
-            <div className="p-2 bg-blue-100 rounded-2xl text-blue-800">
+            <div className="p-2 bg-blue-50 rounded-2xl text-blue-700">
               <Clock className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-900">{stats.punctualityRate}%</span>
+            <span className="text-3xl font-bold text-slate-900">{stats.punctualityRate}%</span>
             <span className="text-[11px] text-blue-700 font-bold">No Horário</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
@@ -288,15 +288,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* KPI 3: Rastreabilidade por QR Code */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-teal-300 transition-all">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-teal-300 transition-all">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Via QR Code</span>
-            <div className="p-2 bg-teal-100 rounded-2xl text-teal-800">
+            <div className="p-2 bg-teal-50 rounded-2xl text-teal-700">
               <QrCode className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-900">{stats.qrRate}%</span>
+            <span className="text-3xl font-bold text-slate-900">{stats.qrRate}%</span>
             <span className="text-[11px] text-teal-700 font-bold">No Local</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
@@ -311,15 +311,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* KPI 4: Desvios / Atrasos */}
-        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-amber-300 transition-all">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs relative overflow-hidden group hover:border-amber-300 transition-all">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Desvios de Horário</span>
-            <div className="p-2 bg-amber-100 rounded-2xl text-amber-800">
+            <div className="p-2 bg-amber-50 rounded-2xl text-amber-700">
               <AlertTriangle className="w-5 h-5" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-900">{stats.delayedChecks}</span>
+            <span className="text-3xl font-bold text-slate-900">{stats.delayedChecks}</span>
             <span className="text-[11px] text-amber-700 font-bold">Lançamentos</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
@@ -338,7 +338,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Gráfico de Tendência Diária (Dias 1 ao fim do mês) - Ocupa 2 colunas */}
-        <div className="lg:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
+        <div className="lg:col-span-2 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -400,7 +400,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Desempenho por Setor da Planta */}
-        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
           <div>
             <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 mb-1">
               <Layers className="w-4 h-4 text-emerald-600" />
@@ -447,7 +447,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </div>
 
       {/* 4. Feed de Auditoria em Tempo Real (Últimos 10 Lançamentos) */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs">
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-xs">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">

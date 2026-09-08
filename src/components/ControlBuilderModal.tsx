@@ -290,7 +290,7 @@ export const ControlBuilderModal: React.FC<ControlBuilderModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/80 backdrop-blur-xs animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
         
         {/* Header */}
         <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white px-6 py-4 flex items-center justify-between">
@@ -497,7 +497,7 @@ export const ControlBuilderModal: React.FC<ControlBuilderModalProps> = ({
                       className="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between gap-3 shadow-xs"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-xs">
+                        <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs">
                           {idx + 1}
                         </span>
                         <div>
@@ -539,7 +539,7 @@ export const ControlBuilderModal: React.FC<ControlBuilderModalProps> = ({
                     {editingColId ? (
                       <>
                         <Edit3 className="w-4 h-4 text-amber-600" />
-                        <span className="text-amber-950 font-black">
+                        <span className="text-amber-950 font-bold">
                           Editando Coluna: <span className="underline">{newColName || 'Sem Nome'}</span>
                         </span>
                       </>

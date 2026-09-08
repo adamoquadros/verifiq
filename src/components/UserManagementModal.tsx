@@ -247,7 +247,7 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/80 backdrop-blur-xs animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden border border-slate-200 flex flex-col max-h-[92vh]">
         
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
@@ -414,7 +414,7 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
                         {/* Details */}
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <h4 className="font-black text-xs text-slate-900 truncate">
+                            <h4 className="font-bold text-xs text-slate-900 truncate">
                               {user.name}
                             </h4>
                             {isCurrent && (
@@ -472,7 +472,7 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
               </div>
 
               {filteredUsers.length === 0 && (
-                <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                   <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                   <p className="text-xs font-bold text-slate-600">Nenhum usuário encontrado com os filtros atuais.</p>
                 </div>
@@ -486,11 +486,11 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
               
               <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-2xl text-white font-black text-base flex items-center justify-center shadow-xs ${formData.avatarColor}`}>
+                  <div className={`w-12 h-12 rounded-2xl text-white font-bold text-base flex items-center justify-center shadow-xs ${formData.avatarColor}`}>
                     {formData.initials || computeInitials(formData.name)}
                   </div>
                   <div>
-                    <h4 className="font-black text-sm text-slate-900">
+                    <h4 className="font-bold text-sm text-slate-900">
                       {activeTab === 'my-profile' 
                         ? 'Meu Perfil & Credenciais' 
                         : editingUserId 
@@ -675,7 +675,7 @@ export const UserManagementModal: React.FC<UserManagementModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   <span>Salvar Dados da Conta</span>

@@ -289,7 +289,7 @@ export const DocumentMatrix: React.FC<DocumentMatrixProps> = ({
   return (
     <div className="space-y-4">
       {/* Top Control Bar (Non-printed) */}
-      <div className="bg-white rounded-3xl p-4 border border-slate-200 shadow-xs no-print flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs no-print flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Month Selector */}
         <div className="flex items-center gap-3">
           <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200">
@@ -417,7 +417,7 @@ export const DocumentMatrix: React.FC<DocumentMatrixProps> = ({
       {/* ============================================================== */}
       {/* THE OFFICIAL CONTROLLED DOCUMENT LAYOUT CONTAINER               */}
       {/* ============================================================== */}
-      <div className="bg-white rounded-3xl shadow-md border border-slate-300 p-3 sm:p-5 print:p-0 print:border-0 print:shadow-none overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-md border border-slate-300 p-3 sm:p-5 print:p-0 print:border-0 print:shadow-none overflow-hidden">
         
         {/* Header Box (Exact Replica of Image with Dynamic Company Logo) */}
         <div className="border-2 border-slate-800 text-slate-900 mb-0.5 text-xs select-none">
@@ -474,7 +474,7 @@ export const DocumentMatrix: React.FC<DocumentMatrixProps> = ({
               <tr className="bg-slate-200/90 text-slate-900 border-b border-slate-800 font-bold">
                 <th 
                   rowSpan={2} 
-                  className="w-10 sm:w-12 border-r-2 border-slate-800 p-1 bg-slate-300 font-black text-center text-xs tracking-wider"
+                  className="w-10 sm:w-12 border-r-2 border-slate-800 p-1 bg-slate-300 font-bold text-center text-xs tracking-wider"
                 >
                   DIA
                 </th>
@@ -482,7 +482,7 @@ export const DocumentMatrix: React.FC<DocumentMatrixProps> = ({
                 {hasMultiTimeChecks && (
                   <th 
                     rowSpan={2} 
-                    className="w-16 sm:w-20 border-r-2 border-slate-800 p-1 bg-slate-300 font-black text-center text-xs tracking-wider"
+                    className="w-16 sm:w-20 border-r-2 border-slate-800 p-1 bg-slate-300 font-bold text-center text-xs tracking-wider"
                   >
                     HORÁRIO
                   </th>
@@ -575,7 +575,7 @@ export const DocumentMatrix: React.FC<DocumentMatrixProps> = ({
                       {isFirstSlotOfDay && (
                         <td 
                           rowSpan={dayTimeSlots.length}
-                          className={`border-r-2 border-slate-800 font-black text-center text-xs align-middle ${
+                          className={`border-r-2 border-slate-800 font-bold text-center text-xs align-middle ${
                             currentDayActive ? 'bg-amber-200 text-amber-900' : 'bg-slate-200/90 text-slate-800'
                           }`}
                         >
@@ -690,9 +690,9 @@ export const DocumentMatrix: React.FC<DocumentMatrixProps> = ({
       {/* Modal de Confirmação para Zerar Lançamentos */}
       {isClearModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in no-print">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6 space-y-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center gap-2.5 text-rose-600 font-black text-base">
+              <div className="flex items-center gap-2.5 text-rose-600 font-bold text-base">
                 <div className="p-2 bg-rose-100 rounded-xl">
                   <AlertTriangle className="w-5 h-5 text-rose-700" />
                 </div>

@@ -172,7 +172,7 @@ export const ScheduleConfigView: React.FC<ScheduleConfigViewProps> = ({
 
   if (!activeControl) {
     return (
-      <div className="bg-white rounded-3xl p-8 text-center border border-slate-200">
+      <div className="bg-white rounded-2xl p-8 text-center border border-slate-200">
         <p className="font-bold text-slate-700">Nenhum modelo de controle selecionado para esta empresa.</p>
         <button
           onClick={onOpenCreateControl}
@@ -263,7 +263,7 @@ export const ScheduleConfigView: React.FC<ScheduleConfigViewProps> = ({
               return (
                 <div
                   key={ctrl.id}
-                  className={`bg-white rounded-3xl p-5 border transition-all flex flex-col justify-between shadow-xs ${
+                  className={`bg-white rounded-2xl p-5 border transition-all flex flex-col justify-between shadow-xs ${
                     isActive 
                       ? 'border-emerald-500 ring-2 ring-emerald-500/20' 
                       : 'border-slate-200 hover:border-slate-300'
@@ -279,7 +279,7 @@ export const ScheduleConfigView: React.FC<ScheduleConfigViewProps> = ({
                       </span>
                     </div>
 
-                    <h4 className="font-black text-sm text-slate-900 leading-snug mb-3">
+                    <h4 className="font-bold text-sm text-slate-900 leading-snug mb-3">
                       {ctrl.title}
                     </h4>
 
@@ -354,7 +354,7 @@ export const ScheduleConfigView: React.FC<ScheduleConfigViewProps> = ({
 
           {/* Form */}
           {(isAddingNewTask || editingTask) && (
-            <form onSubmit={handleSaveTask} className="bg-white rounded-3xl p-5 border-2 border-emerald-500 shadow-md space-y-4">
+            <form onSubmit={handleSaveTask} className="bg-white rounded-2xl p-5 border-2 border-emerald-500 shadow-md space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h4 className="font-bold text-sm text-slate-900">
                   {isAddingNewTask ? '➕ Cadastrar Nova Coluna' : '✏️ Editar Coluna'}
@@ -525,7 +525,7 @@ export const ScheduleConfigView: React.FC<ScheduleConfigViewProps> = ({
           )}
 
           {/* List of Tasks */}
-          <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs">
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
             <div className="divide-y divide-slate-100">
               {activeControl.tasks.map((task) => {
                 const sector = activeControl.sectors.find(s => s.id === task.sectorId);
@@ -603,9 +603,9 @@ export const ScheduleConfigView: React.FC<ScheduleConfigViewProps> = ({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {users.map((u) => (
-              <div key={u.id} className="bg-white rounded-3xl p-4 border border-slate-200 shadow-xs space-y-3">
+              <div key={u.id} className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-2xl text-white font-black text-base flex items-center justify-center shadow-xs ${u.avatarColor}`}>
+                  <div className={`w-12 h-12 rounded-2xl text-white font-bold text-base flex items-center justify-center shadow-xs ${u.avatarColor}`}>
                     {u.initials}
                   </div>
                   <div>
@@ -628,7 +628,7 @@ export const ScheduleConfigView: React.FC<ScheduleConfigViewProps> = ({
 
       {/* SUBTAB 4: METADATA */}
       {activeSubTab === 'metadata' && (
-        <form onSubmit={handleSaveMetadata} className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4 max-w-2xl">
+        <form onSubmit={handleSaveMetadata} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4 max-w-2xl">
           <h3 className="font-extrabold text-sm text-slate-900">Personalizar Cabeçalho de: {activeControl.docCode}</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">

@@ -83,7 +83,7 @@ export const VerifIQLogo: React.FC<VerifIQLogoProps> = ({
       {showText && (
         <div className="flex flex-col text-left leading-tight">
           <div className="flex items-center gap-1.5">
-            <span className={`font-black tracking-tight ${currentSize.text} ${textColor}`}>
+            <span className={`font-bold tracking-tight ${currentSize.text} ${textColor}`}>
               Verif<span className="text-emerald-400">IQ</span>
             </span>
             <span className="px-1.5 py-0.5 rounded-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[9px] font-mono font-bold tracking-widest uppercase">

@@ -53,34 +53,34 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      
+    <div className="space-y-8 max-w-7xl mx-auto">
+
       {/* Welcome Hero Banner (Formal Corporate Presentation) */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-emerald-800/40">
-        <div className="absolute -right-10 -bottom-10 w-60 h-60 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="bg-white rounded-2xl p-6 sm:p-10 shadow-xs relative overflow-hidden border border-slate-200">
+        <div className="absolute -right-16 -top-16 w-72 h-72 bg-emerald-50 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2.5 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-[11px] font-bold text-emerald-200 tracking-wide uppercase">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
-              <span>Sistema Integrado de Gestão da Qualidade & BPF</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-              Diretório Corporativo de Unidades Fabris & Empresas
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-emerald-600 flex items-center gap-2">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>00 — Sistema Integrado de Gestão da Qualidade & BPF</span>
+            </span>
+            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900">
+              Diretório de Empresas
             </h1>
-            <div className="text-xs text-emerald-200/90 font-medium">
-              Sessão iniciada: <strong>{authUser.name}</strong> • Perfil: <strong>{getRoleLabel(authUser.role)}</strong>
+            <div className="text-xs text-slate-500 font-medium">
+              Sessão iniciada: <strong className="text-slate-700">{authUser.name}</strong> • Perfil: <strong className="text-slate-700">{getRoleLabel(authUser.role)}</strong>
             </div>
-            <p className="text-xs sm:text-sm text-emerald-100/80 leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-normal">
               Ambiente institucional para seleção e governança de unidades operacionais. Cada entidade empresarial gerencia de forma segregada seus registros normativos, procedimentos operacionais padronizados (POPs), matrizes de checagem física e trilhas de conformidade sanitária em consonância com as Boas Práticas de Fabricação (BPF).
             </p>
           </div>
 
           <button
             onClick={onOpenCreateCompany}
-            className="px-5 py-3.5 bg-white text-emerald-950 hover:bg-emerald-50 rounded-2xl font-black text-xs shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2 shrink-0 border border-emerald-100"
+            className="px-5 py-3.5 bg-emerald-600 text-white hover:bg-emerald-700 rounded-2xl font-bold text-xs shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 shrink-0"
           >
-            <Plus className="w-4 h-4 text-emerald-800" />
+            <Plus className="w-4 h-4" />
             <span>Cadastrar Nova Unidade</span>
           </button>
         </div>
@@ -113,7 +113,7 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
           return (
             <div
               key={comp.id}
-              className={`bg-white rounded-3xl p-6 border transition-all flex flex-col justify-between shadow-xs ${
+              className={`bg-white rounded-2xl p-6 border transition-all flex flex-col justify-between shadow-xs ${
                 isActive 
                   ? 'border-emerald-500 ring-2 ring-emerald-500/20 shadow-md' 
                   : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
@@ -146,7 +146,7 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
                 </div>
 
                 {/* Company Name & Trade Name */}
-                <h3 className="font-black text-lg text-slate-900 leading-tight">
+                <h3 className="font-bold text-lg text-slate-900 leading-tight">
                   {comp.name}
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">
@@ -162,7 +162,7 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
                 <div className="grid grid-cols-2 gap-2 my-4 pt-3 border-t border-slate-100 text-xs">
                   <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                     <div className="text-[10px] text-slate-400 font-bold uppercase">Controles</div>
-                    <div className="text-base font-black text-slate-800 flex items-center gap-1.5 mt-0.5">
+                    <div className="text-base font-bold text-slate-800 flex items-center gap-1.5 mt-0.5">
                       <Layers className="w-4 h-4 text-emerald-600" />
                       <span>{comp.controls.length}</span>
                     </div>
@@ -170,7 +170,7 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
 
                   <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                     <div className="text-[10px] text-slate-400 font-bold uppercase">Atividades</div>
-                    <div className="text-base font-black text-slate-800 flex items-center gap-1.5 mt-0.5">
+                    <div className="text-base font-bold text-slate-800 flex items-center gap-1.5 mt-0.5">
                       <FileSpreadsheet className="w-4 h-4 text-blue-600" />
                       <span>{totalTasks}</span>
                     </div>
@@ -182,7 +182,7 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                 <button
                   onClick={() => onSelectCompany(comp)}
-                  className={`flex-1 py-2.5 px-4 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 shadow-xs ${
+                  className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-xs ${
                     isActive
                       ? 'bg-emerald-800 hover:bg-emerald-900 text-white'
                       : 'bg-emerald-600 hover:bg-emerald-700 text-white'

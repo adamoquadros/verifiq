@@ -168,7 +168,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/75 backdrop-blur-xs animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
         
         {/* Header */}
         <div className="bg-gradient-to-r from-emerald-800 to-teal-800 text-white px-5 py-4 flex items-center justify-between">
@@ -253,7 +253,7 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
                   <span>{scannedResult.control.docCode} • {scannedResult.control.title}</span>
                 </div>
 
-                <h4 className="text-base font-black text-emerald-950">{scannedResult.task.name}</h4>
+                <h4 className="text-base font-bold text-emerald-950">{scannedResult.task.name}</h4>
                 <div className="text-xs font-semibold text-emerald-800">
                   Código: {scannedResult.task.code} • {scannedResult.task.popRef}
                 </div>

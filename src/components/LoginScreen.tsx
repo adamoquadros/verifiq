@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import type { UserAccount, Company, UserRole } from '../types';
 import { VerifIQLogo } from './VerifIQLogo';
-import { 
-  ShieldCheck, 
-  Lock, 
-  Mail, 
-  ArrowRight, 
-  UserPlus, 
-  X, 
-  Building2 
+import {
+  ShieldCheck,
+  Lock,
+  Mail,
+  ArrowRight,
+  UserPlus,
+  X,
+  Building2
 } from 'lucide-react';
 
 interface LoginScreenProps {
@@ -65,7 +65,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     setErrorMsg(null);
 
     const cleanInput = emailOrBadge.trim().toLowerCase();
-    const foundUser = users.find(u => 
+    const foundUser = users.find(u =>
       (u.email && u.email.toLowerCase() === cleanInput) ||
       u.badgeNumber.toLowerCase() === cleanInput ||
       u.name.toLowerCase().includes(cleanInput)
@@ -95,7 +95,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       return;
     }
 
-    const duplicate = users.find(u => 
+    const duplicate = users.find(u =>
       (regEmail && u.email && u.email.toLowerCase() === regEmail.trim().toLowerCase()) ||
       (regBadge && u.badgeNumber.toLowerCase() === regBadge.trim().toLowerCase())
     );
@@ -105,11 +105,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       return;
     }
 
-    const targetCompanyId = regRole === 'ADMIN' 
-      ? undefined 
+    const targetCompanyId = regRole === 'ADMIN'
+      ? undefined
       : (regCompanyId || (companies.length > 0 ? companies[0].id : 'comp-herbarium'));
-    
-    const targetCompanyName = targetCompanyId 
+
+    const targetCompanyName = targetCompanyId
       ? (companies.find(c => c.id === targetCompanyId)?.name || 'Herbarium Laboratório')
       : undefined;
 
@@ -135,42 +135,42 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden font-sans">
-      
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative overflow-hidden font-sans">
 
-      <div className="max-w-md w-full relative z-10 space-y-6 animate-in fade-in zoom-in-95 duration-300">
-        
+      {/* Ambient decoration — soft green glow, formal and understated */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-100/60 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-50 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-md w-full relative z-10 space-y-8 animate-in fade-in zoom-in-95 duration-300">
+
         {/* Brand Header */}
-        <div className="text-center space-y-3 flex flex-col items-center">
-          <div className="p-3.5 rounded-3xl bg-slate-800/80 border border-emerald-500/30 shadow-2xl shadow-emerald-950/60 ring-4 ring-emerald-500/10 backdrop-blur-md transition-transform hover:scale-105 duration-300">
+        <div className="text-center space-y-4 flex flex-col items-center">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm transition-transform hover:scale-105 duration-300">
             <VerifIQLogo size="lg" showText={false} />
           </div>
 
-          <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center gap-2">
-              <span>Verif<span className="text-emerald-400">IQ</span></span>
-              <span className="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full font-mono">
-                BPF
-              </span>
+          <div className="space-y-2">
+            <span className="text-[11px] font-semibold tracking-[0.25em] uppercase text-emerald-600">
+              Sistema BPF
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+              Verif<span className="text-emerald-600">IQ</span>
             </h1>
-            <p className="text-xs sm:text-sm text-emerald-200/80 font-medium">
-              Sistema Digital de Gestão, Controle & Rastreabilidade BPF
+            <p className="text-xs sm:text-sm text-slate-500 font-medium max-w-xs mx-auto">
+              Gestão, controle e rastreabilidade digital de Boas Práticas de Fabricação
             </p>
           </div>
 
           {/* Status do Neon DB */}
           <div className="flex justify-center pt-1">
             {isNeonConnected === true && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>Banco de Dados Neon Cloud Conectado</span>
               </span>
             )}
             {isNeonConnected === false && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold">
                 <span className="w-2 h-2 rounded-full bg-amber-400"></span>
                 <span>Modo Local / Sincronizando</span>
               </span>
@@ -179,17 +179,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         </div>
 
         {/* Login Card */}
-        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 space-y-5">
-          
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-emerald-100 rounded-xl text-emerald-800">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="font-extrabold text-sm text-slate-900">Acesso ao Sistema</h2>
-                <p className="text-[11px] text-slate-500">Identifique-se para iniciar</p>
-              </div>
+        <div className="bg-white rounded-2xl p-7 sm:p-10 shadow-xl shadow-slate-200/60 border border-slate-200 space-y-6">
+
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div>
+              <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-slate-400">01 — Identificação</span>
+              <h2 className="font-bold text-sm text-slate-900 mt-0.5">Acesso ao Sistema</h2>
             </div>
 
             <button
@@ -204,10 +199,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 setRegError(null);
                 setIsRegisterOpen(true);
               }}
-              className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-colors"
+              className="text-[11px] font-semibold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 transition-colors"
               title="Cadastrar Nova Conta"
             >
-              <UserPlus className="w-3.5 h-3.5 text-emerald-600" />
+              <UserPlus className="w-3.5 h-3.5" />
               <span>+ Nova Conta</span>
             </button>
           </div>
@@ -220,7 +215,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
           <form onSubmit={handleFormLogin} className="space-y-4 text-xs">
             <div>
-              <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+              <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
                 <Mail className="w-3.5 h-3.5 text-slate-400" />
                 <span>E-mail ou Matrícula:</span>
               </label>
@@ -235,7 +230,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+              <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
                 <Lock className="w-3.5 h-3.5 text-slate-400" />
                 <span>Senha / Código de Acesso:</span>
               </label>
@@ -256,7 +251,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="w-4 h-4 rounded border-slate-300 text-emerald-700 focus:ring-emerald-500 focus:ring-offset-0 cursor-pointer accent-emerald-700 transition-all"
                 />
-                <span className="font-semibold group-hover:text-emerald-950 transition-colors">
+                <span className="font-semibold group-hover:text-emerald-800 transition-colors">
                   Manter-me conectado
                 </span>
               </label>
@@ -264,7 +259,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
             <button
               type="submit"
-              className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-extrabold text-xs shadow-lg hover:shadow-xl transition-all transform active:scale-95 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2"
             >
               <span>Acessar Painel</span>
               <ArrowRight className="w-4 h-4" />
@@ -273,24 +268,24 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         </div>
 
         {/* Footer Note */}
-        <div className="text-center text-[11px] text-emerald-100/60 font-medium">
+        <div className="text-center text-[11px] text-slate-400 font-medium">
           Sistema VerifIQ • Em conformidade com as Boas Práticas de Fabricação (BPF / GMP)
         </div>
       </div>
 
       {/* Modal de Criação de Conta na Tela de Login */}
       {isRegisterOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 animate-in zoom-in-95">
-            
-            <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 animate-in zoom-in-95">
+
+            <div className="bg-emerald-700 text-white px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-emerald-500/20 rounded-xl border border-emerald-500/30">
-                  <UserPlus className="w-5 h-5 text-emerald-400" />
+                <div className="p-2 bg-white/10 rounded-xl border border-white/20">
+                  <UserPlus className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm">Criar Nova Conta</h3>
-                  <p className="text-[11px] text-emerald-200/80">O usuário será salvo no Neon PostgreSQL</p>
+                  <h3 className="font-bold text-sm">Criar Nova Conta</h3>
+                  <p className="text-[11px] text-emerald-100">O usuário será salvo no Neon PostgreSQL</p>
                 </div>
               </div>
               <button
@@ -309,7 +304,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               )}
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Nome Completo *</label>
+                <label className="block font-semibold text-slate-700 mb-1">Nome Completo *</label>
                 <input
                   type="text"
                   required
@@ -322,7 +317,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">E-mail</label>
+                  <label className="block font-semibold text-slate-700 mb-1">E-mail</label>
                   <input
                     type="email"
                     value={regEmail}
@@ -332,7 +327,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Matrícula</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Matrícula</label>
                   <input
                     type="text"
                     value={regBadge}
@@ -345,7 +340,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Senha de Acesso</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Senha de Acesso</label>
                   <input
                     type="password"
                     value={regPassword}
@@ -355,7 +350,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Perfil de Acesso *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Perfil de Acesso *</label>
                   <select
                     value={regRole}
                     onChange={(e) => setRegRole(e.target.value as UserRole)}
@@ -371,7 +366,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               {/* Se for Visualizador ou Operador, selecione a empresa vinculada */}
               {regRole !== 'ADMIN' && (
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                  <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
                     <Building2 className="w-3.5 h-3.5 text-slate-500" />
                     <span>Empresa Vinculada *</span>
                   </label>
@@ -390,7 +385,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     ))}
                   </select>
                   <p className="text-[10px] text-slate-400 mt-1">
-                    {regRole === 'VIEWER' 
+                    {regRole === 'VIEWER'
                       ? 'O visualizador só poderá acessar os dashboards e dados desta empresa.'
                       : 'O operador só poderá operar e registrar checks desta empresa.'}
                   </p>
@@ -398,7 +393,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               )}
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1.5">Cor do Avatar</label>
+                <label className="block font-semibold text-slate-700 mb-1.5">Cor do Avatar</label>
                 <div className="flex items-center gap-2">
                   {AVATAR_COLORS.map(color => (
                     <button
@@ -415,13 +410,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsRegisterOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl font-bold transition-colors"
+                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-xl font-semibold transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-extrabold shadow-md transition-all transform active:scale-95"
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-md transition-all transform active:scale-95"
                 >
                   Cadastrar & Entrar
                 </button>
@@ -433,4 +428,3 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     </div>
   );
 };
-

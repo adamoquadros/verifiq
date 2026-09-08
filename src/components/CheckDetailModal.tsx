@@ -124,7 +124,7 @@ export const CheckDetailModal: React.FC<CheckDetailModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/75 backdrop-blur-xs animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
         {/* Header */}
         <div className="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -156,7 +156,7 @@ export const CheckDetailModal: React.FC<CheckDetailModalProps> = ({
               </span>
               <span className="text-[10px] text-slate-500 font-semibold">{sector?.name}</span>
             </div>
-            <div className="font-black text-sm text-slate-900">{task.name}</div>
+            <div className="font-bold text-sm text-slate-900">{task.name}</div>
             <div className="text-[10px] text-slate-400">{control.title} ({control.popRef})</div>
           </div>
 

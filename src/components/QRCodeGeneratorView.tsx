@@ -32,14 +32,14 @@ export const QRCodeGeneratorView: React.FC<QRCodeGeneratorViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner (Non-printed) */}
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
+      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div>
           <div className="flex items-center gap-2.5">
             <div className="p-2.5 bg-emerald-100 rounded-2xl text-emerald-800">
               <QrCode className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-black text-slate-900">Gerador de Etiquetas QR Code</h2>
+              <h2 className="text-lg font-bold text-slate-900">Gerador de Etiquetas QR Code</h2>
               <p className="text-xs text-slate-500">
                 Imprima as etiquetas físicas da empresa <strong>{company.name}</strong> para fixação nos postos de checagem
               </p>

@@ -109,47 +109,47 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
     <div className="space-y-6">
       {/* Top Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-semibold">Total de Registros</span>
             <CheckCircle2 className="w-5 h-5 text-emerald-600" />
           </div>
-          <div className="text-2xl font-black text-slate-900">{totalRecords}</div>
+          <div className="text-2xl font-bold text-slate-900">{totalRecords}</div>
           <p className="text-[11px] text-slate-500 mt-1">Checks auditados no sistema</p>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-semibold">Índice de Pontualidade</span>
             <Clock className="w-5 h-5 text-blue-600" />
           </div>
-          <div className="text-2xl font-black text-blue-700">
+          <div className="text-2xl font-bold text-blue-700">
             {totalRecords > 0 ? Math.round((onTimeTotal / totalRecords) * 100) : 100}%
           </div>
           <p className="text-[11px] text-slate-500 mt-1">{onTimeTotal} executados no prazo</p>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-semibold">Checks com Atraso</span>
             <AlertTriangle className="w-5 h-5 text-amber-600" />
           </div>
-          <div className="text-2xl font-black text-amber-700">{delayedTotal}</div>
+          <div className="text-2xl font-bold text-amber-700">{delayedTotal}</div>
           <p className="text-[11px] text-slate-500 mt-1">Acima da tolerância de minutos</p>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-semibold">Leitura via QR Code</span>
             <QrCode className="w-5 h-5 text-purple-600" />
           </div>
-          <div className="text-2xl font-black text-purple-700">{qrPercent}%</div>
+          <div className="text-2xl font-bold text-purple-700">{qrPercent}%</div>
           <p className="text-[11px] text-slate-500 mt-1">{qrCodeTotal} checks via câmera</p>
         </div>
       </div>
 
       {/* Operator Leaderboard */}
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs">
+      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
         <h3 className="font-extrabold text-sm text-slate-900 mb-3 flex items-center gap-2">
           <UserCheck className="w-4 h-4 text-emerald-700" />
           <span>Desempenho por Operador Responsável</span>
@@ -157,7 +157,7 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {operatorMetrics.map(({ user, total, onTime, delayed, onTimePercent }) => (
             <div key={user.id} className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200 flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-xl text-white font-black text-sm flex items-center justify-center shrink-0 shadow-xs ${user.avatarColor}`}>
+              <div className={`w-10 h-10 rounded-xl text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-xs ${user.avatarColor}`}>
                 {user.initials}
               </div>
               <div className="min-w-0 flex-1">
@@ -173,7 +173,7 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
       </div>
 
       {/* Audit Log Table Header & Filters */}
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <div>
             <h3 className="font-extrabold text-sm text-slate-900">Trilha de Auditoria (GMP / Rastreabilidade)</h3>

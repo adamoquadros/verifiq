@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <VerifIQLogo size="sm" showText={false} />
               <div className="hidden sm:flex flex-col leading-none">
-                <span className="font-black text-slate-900 text-sm tracking-tight">
+                <span className="font-bold text-slate-900 text-sm tracking-tight">
                   Verif<span className="text-emerald-600">IQ</span>
                 </span>
                 <span className="text-[9px] text-slate-400 font-medium tracking-wide">
