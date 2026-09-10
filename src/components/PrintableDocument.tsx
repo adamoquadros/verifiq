@@ -78,7 +78,6 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({
           <div className="col-span-3 p-1.5 text-center text-[9px] flex flex-col justify-center">
             <div className="font-bold">{control.docCode}</div>
             <div>{control.revision}</div>
-            <div>{control.pageInfo}</div>
           </div>
         </div>
 

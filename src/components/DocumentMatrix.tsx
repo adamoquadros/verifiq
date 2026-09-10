@@ -447,7 +447,6 @@ export const DocumentMatrix: React.FC<DocumentMatrixProps> = ({
             <div className="col-span-3 p-1.5 sm:p-2 text-center text-[10px] sm:text-xs flex flex-col justify-center leading-tight">
               <div className="font-bold">{control.docCode}</div>
               <div className="text-slate-700">{control.revision}</div>
-              <div className="text-slate-600">{control.pageInfo}</div>
             </div>
           </div>
 

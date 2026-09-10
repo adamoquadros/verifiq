@@ -1,35 +1,46 @@
 import React, { useState, useMemo } from 'react';
 import type { CheckRecord, UserOperator, DocumentControl } from '../types';
-import { 
-  CheckCircle2, 
-  Clock, 
-  AlertTriangle, 
-  FileSpreadsheet, 
-  UserCheck, 
-  Search, 
-  QrCode, 
+import {
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
+  FileSpreadsheet,
+  UserCheck,
+  Search,
+  QrCode,
   FileText,
-  Layers
+  Layers,
+  X,
+  ChevronRight
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { CheckDetailModal } from './CheckDetailModal';
 
 interface AuditReportViewProps {
   records: CheckRecord[];
   controls: DocumentControl[];
   activeControl: DocumentControl;
   users: UserOperator[];
+  activeUser: UserOperator;
+  onSaveCheck: (record: Omit<CheckRecord, 'id'>) => void;
+  onDeleteCheck: (recordId: string) => void;
 }
 
 export const AuditReportView: React.FC<AuditReportViewProps> = ({
   records,
   controls,
   activeControl,
-  users
+  users,
+  activeUser,
+  onSaveCheck,
+  onDeleteCheck
 }) => {
   const [selectedControlId, setSelectedControlId] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
   const [selectedOperator, setSelectedOperator] = useState<string>('ALL');
+  const [detailRecord, setDetailRecord] = useState<CheckRecord | null>(null);
+  const [detailOperator, setDetailOperator] = useState<UserOperator | null>(null);
 
   // Sorted and filtered records (newest first)
   const filteredRecords = useMemo(() => {
@@ -70,6 +81,21 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
     });
   }, [records, users, selectedControlId]);
 
+  // Records for the operator currently open in the detail modal
+  const detailOperatorRecords = useMemo(() => {
+    if (!detailOperator) return [];
+    return records
+      .filter(r => r.userId === detailOperator.id && (selectedControlId === 'ALL' || r.controlId === selectedControlId))
+      .sort((a, b) => new Date(b.checkedAt).getTime() - new Date(a.checkedAt).getTime());
+  }, [records, detailOperator, selectedControlId]);
+
+  const handleOpenRecordDetail = (rec: CheckRecord) => {
+    setDetailRecord(rec);
+  };
+
+  const detailCtrl = detailRecord ? controls.find(c => c.id === detailRecord.controlId) : undefined;
+  const detailTask = detailCtrl?.tasks.find(t => t.id === detailRecord?.taskId);
+
   // Overall counts
   const totalRecords = filteredRecords.length;
   const onTimeTotal = filteredRecords.filter(r => r.status !== 'DELAYED').length;
@@ -106,6 +132,7 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
   };
 
   return (
+    <>
     <div className="space-y-6">
       {/* Top Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -156,7 +183,13 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {operatorMetrics.map(({ user, total, onTime, delayed, onTimePercent }) => (
-            <div key={user.id} className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200 flex items-center gap-3">
+            <button
+              key={user.id}
+              type="button"
+              onClick={() => setDetailOperator(user)}
+              className="bg-slate-50 hover:bg-slate-100 hover:border-emerald-300 rounded-2xl p-3.5 border border-slate-200 flex items-center gap-3 text-left transition-colors"
+              title="Ver detalhes deste operador"
+            >
               <div className={`w-10 h-10 rounded-xl text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-xs ${user.avatarColor}`}>
                 {user.initials}
               </div>
@@ -167,7 +200,8 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
                   <div className="bg-emerald-600 h-1.5 rounded-full" style={{ width: `${onTimePercent}%` }} />
                 </div>
               </div>
-            </div>
+              <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+            </button>
           ))}
         </div>
       </div>
@@ -265,7 +299,12 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
                   const sector = ctrl?.sectors.find(s => s.id === rec.sectorId);
 
                   return (
-                    <tr key={rec.id} className="hover:bg-slate-50 transition-colors">
+                    <tr
+                      key={rec.id}
+                      onClick={() => handleOpenRecordDetail(rec)}
+                      className="hover:bg-emerald-50/60 transition-colors cursor-pointer"
+                      title="Ver / editar detalhes deste registro"
+                    >
                       <td className="p-3 whitespace-nowrap">
                         <div className="font-bold text-slate-900">{rec.date}</div>
                         <div className="text-[10px] text-slate-500">{rec.checkedTime}</div>
@@ -343,5 +382,87 @@ export const AuditReportView: React.FC<AuditReportViewProps> = ({
         </div>
       </div>
     </div>
+
+    {/* Operator Detail Modal */}
+    {detailOperator && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/75 backdrop-blur-xs animate-in fade-in">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 flex flex-col max-h-[85vh]">
+          <div className="bg-slate-900 text-white px-5 py-4 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className={`w-9 h-9 rounded-xl text-white font-bold text-sm flex items-center justify-center shrink-0 ${detailOperator.avatarColor}`}>
+                {detailOperator.initials}
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">{detailOperator.name}</h3>
+                <p className="text-[11px] text-slate-300">Mat: {detailOperator.badgeNumber} • {detailOperatorRecords.length} registro(s)</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setDetailOperator(null)}
+              className="p-1.5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="overflow-y-auto flex-1 divide-y divide-slate-100">
+            {detailOperatorRecords.length === 0 ? (
+              <p className="p-6 text-center text-slate-400 text-xs">Nenhum registro encontrado para este operador.</p>
+            ) : (
+              detailOperatorRecords.map(rec => (
+                <button
+                  key={rec.id}
+                  type="button"
+                  onClick={() => {
+                    setDetailOperator(null);
+                    handleOpenRecordDetail(rec);
+                  }}
+                  className="w-full p-3.5 flex items-center justify-between gap-3 text-left hover:bg-slate-50 transition-colors"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold text-xs text-slate-900 truncate">{rec.taskName}</div>
+                    <div className="text-[10px] text-slate-500">{rec.date} às {rec.checkedTime}</div>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                    rec.status === 'DELAYED'
+                      ? 'bg-amber-100 text-amber-800 border-amber-200'
+                      : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+                  }`}>
+                    {rec.status === 'DELAYED' ? `+${rec.delayMinutes} min` : 'No Prazo'}
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Single Record Detail / Edit Modal */}
+    {detailRecord && detailCtrl && detailTask && (
+      <CheckDetailModal
+        isOpen={true}
+        onClose={() => setDetailRecord(null)}
+        day={detailRecord.dayNumber}
+        month={detailRecord.month}
+        year={detailRecord.year}
+        control={detailCtrl}
+        task={detailTask}
+        record={detailRecord}
+        scheduledTime={detailRecord.scheduledTime}
+        activeUser={activeUser}
+        users={users}
+        onSaveCheck={(rec) => {
+          onSaveCheck(rec);
+          setDetailRecord(null);
+        }}
+        onDeleteCheck={(recordId) => {
+          onDeleteCheck(recordId);
+          setDetailRecord(null);
+        }}
+      />
+    )}
+    </>
   );
 };

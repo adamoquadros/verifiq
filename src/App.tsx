@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import type { 
   Company,
   DocumentControl, 
@@ -54,6 +54,19 @@ export function App() {
   // Records & Users State
   const [records, setRecords] = useState<CheckRecord[]>(() => storage.getRecords());
   const [users, setUsers] = useState<UserAccount[]>(() => storage.getUsers());
+
+  // Registros "órfãos" (de empresas, modelos, colunas ou operadores já excluídos)
+  // não devem aparecer em nenhuma tela — mantemos o array bruto intacto para as
+  // regras de negócio (dedupe, exclusão), mas exibimos só os registros válidos.
+  const validRecords = useMemo(() => {
+    return records.filter(r => {
+      const comp = companies.find(c => c.id === r.companyId);
+      const ctrl = comp?.controls.find(c => c.id === r.controlId);
+      const taskExists = ctrl?.tasks.some(t => t.id === r.taskId) ?? false;
+      const userExists = users.some(u => u.id === r.userId);
+      return !!comp && !!ctrl && taskExists && userExists;
+    });
+  }, [records, companies, users]);
 
   // Neon PostgreSQL Cloud Connection State
   const [isNeonConnected, setIsNeonConnected] = useState<boolean | null>(null);
@@ -477,7 +490,7 @@ export function App() {
         <PrintableDocument
           company={activeCompany}
           control={activeControl}
-          records={records}
+          records={validRecords}
           month={new Date().getMonth() + 1}
           year={new Date().getFullYear()}
         />
@@ -556,7 +569,7 @@ export function App() {
               company={activeCompany}
               controls={activeCompany.controls}
               activeControl={activeControl}
-              records={records}
+              records={validRecords}
               users={users}
               activeUser={authUser}
               onNavigateToMatrix={() => setActiveTab('matrix')}
@@ -569,7 +582,7 @@ export function App() {
             <DocumentMatrix
               company={activeCompany}
               control={activeControl}
-              records={records}
+              records={validRecords}
               activeUser={authUser}
               onCellClick={handleCellClick}
               onOpenEditControl={handleOpenEditControl}
@@ -585,7 +598,7 @@ export function App() {
               controls={activeCompany.controls}
               activeControl={activeControl}
               onSelectControl={handleSelectControl}
-              records={records}
+              records={validRecords}
               activeUser={authUser}
               onOpenQRScanner={() => setIsQRScannerOpen(true)}
               onConfirmCheck={handleConfirmCheck}
@@ -605,10 +618,13 @@ export function App() {
           {/* TAB 4: AUDIT REPORTS */}
           {activeTab === 'reports' && activeControl && (
             <AuditReportView
-              records={records}
+              records={validRecords}
               controls={activeCompany.controls}
               activeControl={activeControl}
               users={users}
+              activeUser={authUser}
+              onSaveCheck={handleConfirmCheck}
+              onDeleteCheck={handleDeleteCheck}
             />
           )}
 
