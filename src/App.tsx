@@ -8,6 +8,7 @@ import type {
 } from './types';
 import { storage } from './utils/storage';
 import { api } from './services/api';
+import { parseMultiControlQRPayload } from './utils/qrcode';
 import { Header, type AppTab } from './components/Header';
 import { LoginScreen } from './components/LoginScreen';
 import { CompanyHubView } from './components/CompanyHubView';
@@ -159,6 +160,74 @@ export function App() {
     control: null,
     task: null
   });
+
+  // Deep-link de QR Code: quando a etiqueta impressa é aberta por QUALQUER câmera
+  // (não só o scanner interno do app), o navegador abre esta URL com ?check=...
+  // Guardamos o payload em estado (não só na URL) porque, se o usuário ainda não
+  // estiver logado, precisamos processá-lo somente depois do login.
+  const [pendingQRCheck, setPendingQRCheck] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const checkParam = params.get('check');
+    if (checkParam) {
+      setPendingQRCheck(checkParam);
+      params.delete('check');
+      const newSearch = params.toString();
+      const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : '') + window.location.hash;
+      window.history.replaceState(null, '', newUrl);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!pendingQRCheck || !authUser || companies.length === 0) return;
+
+    const allControls = companies.flatMap(c => c.controls);
+    const match = parseMultiControlQRPayload(pendingQRCheck, allControls);
+
+    if (!match) {
+      alert('QR Code lido, mas não corresponde a nenhuma atividade cadastrada neste sistema.');
+      setPendingQRCheck(null);
+      return;
+    }
+
+    // Operadores e Viewers ficam travados na própria empresa (ver guarda de navegação
+    // abaixo); para Admins, sincroniza a empresa/modelo ativos com o da etiqueta lida.
+    if (match.control.companyId !== activeCompanyId && companies.some(c => c.id === match.control.companyId)) {
+      setActiveCompanyId(match.control.companyId);
+      storage.setActiveCompanyId(match.control.companyId);
+    }
+    if (match.control.id !== activeControlId) {
+      setActiveControlId(match.control.id);
+      storage.setActiveControlId(match.control.id);
+    }
+
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+
+    const existingRecord = records.find(r =>
+      r.controlId === match.control.id &&
+      r.taskId === match.task.id &&
+      r.dayNumber === day &&
+      r.month === month &&
+      r.year === year
+    );
+
+    setCellModalState({
+      isOpen: true,
+      day,
+      month,
+      year,
+      control: match.control,
+      task: match.task,
+      record: existingRecord,
+      scheduledTime: existingRecord?.scheduledTime || (match.task.hasScheduledTime !== false ? match.task.scheduledTime : undefined)
+    });
+
+    setPendingQRCheck(null);
+  }, [pendingQRCheck, authUser, companies, records, activeCompanyId, activeControlId]);
 
   // PWA Install Prompt
   const [installPrompt, setInstallPrompt] = useState<any>(null);
@@ -485,8 +554,10 @@ export function App() {
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col selection:bg-emerald-200">
       
-      {/* Printable Sheet (Shown only during window.print()) */}
-      {activeControl && (
+      {/* Printable Sheet (Shown only during window.print(), only on the Matrix tab —
+          if mounted on every tab it would hijack printing from other screens,
+          such as the QR label sheet). */}
+      {activeControl && activeTab === 'matrix' && (
         <PrintableDocument
           company={activeCompany}
           control={activeControl}
@@ -496,9 +567,12 @@ export function App() {
         />
       )}
 
-      {/* Main Interactive App Container */}
-      <div className="flex-1 flex flex-col no-print">
-        
+      {/* Main Interactive App Container.
+          "no-print" is dropped on the QR Codes tab so its own printable label
+          grid (marked with print: classes inside QRCodeGeneratorView) can show
+          during window.print() instead of being hidden by this wrapper. */}
+      <div className={`flex-1 flex flex-col ${activeTab === 'qrcodes' ? '' : 'no-print'}`}>
+
         {/* Top Header */}
         <Header
           activeTab={activeTab}
@@ -525,7 +599,7 @@ export function App() {
 
         {/* PWA Install Banner */}
         {showInstallBanner && (
-          <div className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white px-4 py-2.5 shadow-md flex items-center justify-between text-xs font-medium">
+          <div className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white px-4 py-2.5 shadow-md flex items-center justify-between text-xs font-medium no-print">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-emerald-300 animate-spin" />
               <span>Instale o aplicativo <strong>Herbarium Check</strong> no celular para acesso offline rápido</span>

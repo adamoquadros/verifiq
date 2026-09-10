@@ -57,12 +57,26 @@ export interface QRScanResult {
   task: TaskItem;
 }
 
+// Etiquetas impressas carregam uma URL completa (ex: https://app.../?check=HLB-CHECK:...)
+// para que QUALQUER câmera (não só o scanner interno do app) consiga abrir o check.
+// Extrai o payload interno de dentro do parâmetro "check" quando presente.
+function extractPayloadFromUrl(raw: string): string {
+  try {
+    const url = new URL(raw);
+    const fromQuery = url.searchParams.get('check');
+    if (fromQuery) return fromQuery;
+  } catch {
+    // não é uma URL válida — segue tratando como payload cru
+  }
+  return raw;
+}
+
 export function parseMultiControlQRPayload(
   qrRaw: string,
   controls: DocumentControl[]
 ): QRScanResult | null {
   if (!qrRaw || !controls || controls.length === 0) return null;
-  const clean = qrRaw.trim();
+  const clean = extractPayloadFromUrl(qrRaw.trim()).trim();
 
   // 1. Check if structured format: HLB-CHECK:CONTROL_ID:CODE:NAME
   if (clean.startsWith('HLB-CHECK:')) {

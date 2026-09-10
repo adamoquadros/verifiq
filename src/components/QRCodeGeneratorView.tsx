@@ -29,6 +29,16 @@ export const QRCodeGeneratorView: React.FC<QRCodeGeneratorViewProps> = ({
     window.print();
   };
 
+  // O QR impresso precisa ser útil para QUALQUER câmera (não só o scanner interno
+  // do app): por isso ele carrega uma URL real do app com o payload interno como
+  // parâmetro. Ao ser apontado, abre o VerifIQ direto na tela de check daquela
+  // atividade (ver handler de deep-link em App.tsx). Usa window.location.origin
+  // para funcionar automaticamente em qualquer domínio/ambiente de implantação.
+  const buildCheckUrl = (task: { qrPayload: string }) => {
+    const base = `${window.location.origin}${window.location.pathname}`;
+    return `${base}?check=${encodeURIComponent(task.qrPayload)}`;
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Banner (Non-printed) */}
@@ -150,7 +160,7 @@ export const QRCodeGeneratorView: React.FC<QRCodeGeneratorViewProps> = ({
               {/* QR Code Graphic */}
               <div className="bg-white p-2.5 rounded-xl border border-slate-200 inline-block mx-auto my-1 shadow-inner">
                 <QRCodeSVG
-                  value={task.qrPayload}
+                  value={buildCheckUrl(task)}
                   size={140}
                   level="H"
                   includeMargin={true}
@@ -176,7 +186,7 @@ export const QRCodeGeneratorView: React.FC<QRCodeGeneratorViewProps> = ({
                   </div>
                 )}
                 <p className="text-[9px] text-slate-500 font-medium italic">
-                  Aponte a câmera do aplicativo para registrar o check
+                  Aponte a câmera do celular (ou o scanner do app) para registrar o check
                 </p>
               </div>
 
